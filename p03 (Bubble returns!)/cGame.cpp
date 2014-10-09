@@ -25,7 +25,7 @@ bool cGame::Init()
 	glEnable(GL_ALPHA_TEST);
 
 	//Scene initialization
-	res = Data.LoadImage(IMG_BLOCKS,"blocks.png",GL_RGBA);
+	res = Data.LoadImage(IMG_BLOCKS,"tileset0.png",GL_RGBA);
 	if(!res) return false;
 	res = Scene.LoadLevel(1);
 	if(!res) return false;

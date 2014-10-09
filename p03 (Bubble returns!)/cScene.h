@@ -4,14 +4,14 @@
 
 #define SCENE_Xo		(2*TILE_SIZE)
 #define SCENE_Yo		TILE_SIZE
-#define SCENE_WIDTH		36
+#define SCENE_WIDTH		100
 #define SCENE_HEIGHT	28
 
 #define FILENAME		"level"
 #define FILENAME_EXT	".txt"
 
 #define TILE_SIZE		16
-#define BLOCK_SIZE		24
+#define BLOCK_SIZE		16
 
 class cScene
 {

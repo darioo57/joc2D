@@ -10,7 +10,6 @@ cGame Game;
 void AppRender()
 {
 	Game.Render();
-	nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 }
 void AppKeyboard(unsigned char key, int x, int y)
 {

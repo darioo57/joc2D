@@ -3,6 +3,8 @@
 
 cScene::cScene(void)
 {
+	actualX = 1;
+	actualY = 1;
 }
 
 cScene::~cScene(void)
@@ -32,8 +34,9 @@ bool cScene::LoadLevel(int level)
 	
 			for(j=SCENE_HEIGHT-1;j>=0;j--)
 			{
-				px=SCENE_Xo;
-				py=SCENE_Yo+(j*TILE_SIZE);
+				px = (actualX*TILE_SIZE);// SCENE_Xo;
+				py = (actualY*TILE_SIZE) + (j*TILE_SIZE);// SCENE_Yo;
+				
 
 				for(i=0;i<SCENE_WIDTH;i++)
 				{
@@ -55,6 +58,7 @@ bool cScene::LoadLevel(int level)
 
 						//BLOCK_SIZE = 16, FILE_SIZE = 32
 						// 16 / 32 = 0.5
+						/*Aixo pinta el mapa*/
 						glTexCoord2f(coordx_tile       ,coordy_tile+0.5f);	glVertex2i(px           ,py           );
 						glTexCoord2f(coordx_tile+0.5f  ,coordy_tile+0.5f);	glVertex2i(px+BLOCK_SIZE,py           );
 						glTexCoord2f(coordx_tile+0.5f  ,coordy_tile     );	glVertex2i(px+BLOCK_SIZE,py+BLOCK_SIZE);

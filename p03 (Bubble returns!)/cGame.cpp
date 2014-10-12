@@ -31,22 +31,27 @@ bool cGame::Init()
 	if(!res) return false;
 
 	//Player initialization
-	res = Data.LoadImage(IMG_PLAYER,"bub.png",GL_RGBA);
+	res = Data.LoadImage(IMG_PLAYER,"Sprites/metalslug_P1.png",GL_RGBA);
 	if(!res) return false;
 	Player.SetWidthHeight(32,32);
-	Player.SetTile(4,1);
+	Player.SetTile(4,10);
 	Player.SetWidthHeight(32,32);
 	Player.SetState(STATE_LOOKRIGHT);
 
 	return res;
 }
 
+int aauuxx = 0;
 bool cGame::Loop()
 {
 	bool res=true;
+	if (aauuxx == 180000)	{
+		res = Process();
+		if (res) Render();
+		aauuxx = 0;
+	}
 
-	res = Process();
-	if(res) Render();
+	++aauuxx;
 
 	return res;
 }
@@ -69,19 +74,17 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 bool cGame::Process()
 {
 	bool res=true;
-	
 	//Process Input
-	if(keys[27])	res=false;
-	
-	if(keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
-	if(keys[GLUT_KEY_LEFT])			Player.MoveLeft(Scene.GetMap());
-	else if(keys[GLUT_KEY_RIGHT])	Player.MoveRight(Scene.GetMap());
+	if (keys[27])	res = false;
+
+	if (keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
+	if (keys[GLUT_KEY_LEFT])			Player.MoveLeft(Scene.GetMap());
+	else if (keys[GLUT_KEY_RIGHT])	Player.MoveRight(Scene.GetMap());
 	else Player.Stop();
-	
-	
+
+
 	//Game Logic
 	Player.Logic(Scene.GetMap());
-
 	return res;
 }
 

@@ -2,7 +2,7 @@
 
 #include "cTexture.h"
 
-#define SCENE_Xo		(2*TILE_SIZE)
+#define SCENE_Xo		TILE_SIZE
 #define SCENE_Yo		TILE_SIZE
 #define SCENE_WIDTH		100
 #define SCENE_HEIGHT	28
@@ -26,4 +26,6 @@ public:
 private:
 	int map[SCENE_WIDTH * SCENE_HEIGHT];	//scene
 	int id_DL;								//actual level display list
+	int actualX;
+	int actualY;
 };

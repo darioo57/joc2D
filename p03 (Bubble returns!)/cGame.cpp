@@ -41,17 +41,11 @@ bool cGame::Init()
 	return res;
 }
 
-int aauuxx = 0;
 bool cGame::Loop()
 {
 	bool res=true;
-	if (aauuxx == 180000)	{
-		res = Process();
-		if (res) Render();
-		aauuxx = 0;
-	}
-
-	++aauuxx;
+	res = Process();
+	if (res) Render();
 
 	return res;
 }

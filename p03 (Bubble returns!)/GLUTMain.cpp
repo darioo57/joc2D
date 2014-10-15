@@ -6,6 +6,7 @@
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 
 cGame Game;
+float time0;
 
 void AppRender()
 {
@@ -33,7 +34,11 @@ void AppMouse(int button, int state, int x, int y)
 }
 void AppIdle()
 {
-	if(!Game.Loop()) exit(0);
+	if ((glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+		time0 = glutGet(GLUT_ELAPSED_TIME);
+		if (!Game.Loop()) exit(0);
+	}
+
 }
 
 void main(int argc, char** argv)
@@ -73,6 +78,7 @@ void main(int argc, char** argv)
 
 	//Game initializations
 	Game.Init();
+	time0 = glutGet(GLUT_ELAPSED_TIME);
 
 	//Application loop
 	glutMainLoop();	

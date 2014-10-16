@@ -11,6 +11,12 @@ cScene::~cScene(void)
 {
 }
 
+void cScene::setPosition(int x, int y)
+{
+	actualX = x;
+	actualY = y;
+}
+
 bool cScene::LoadLevel(int level)
 {
 	bool res;

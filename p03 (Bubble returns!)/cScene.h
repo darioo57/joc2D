@@ -19,6 +19,7 @@ public:
 	cScene(void);
 	virtual ~cScene(void);
 
+	void setPosition(int x, int y);
 	bool LoadLevel(int level);
 	void Draw(int tex_id);
 	int *GetMap();

@@ -88,7 +88,10 @@ void cGame::Render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 	glLoadIdentity();
+	int x, y;
+	Player.GetPosition(&x,&y);
 
+	glTranslatef((-1*x)+64, 0.0f, 0.0f);
 	Scene.Draw(Data.GetID(IMG_BLOCKS));
 	Player.Draw(Data.GetID(IMG_PLAYER));
 

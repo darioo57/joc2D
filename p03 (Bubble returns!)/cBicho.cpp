@@ -115,7 +115,7 @@ void cBicho::GetArea(cRect *rc)
 	rc->bottom = y;
 	rc->top    = y+h;
 }
-void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf)
+void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf, char sentit)
 {
 	int screen_x,screen_y;
 
@@ -128,14 +128,18 @@ void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf)
 	glBegin(GL_QUADS);	
 		//eix X = 1/9
 		//xo = yo = 0.0f; xf = 0.111f; yf = 1.0f;
-		glTexCoord2f(xo, yf);		glVertex2i(screen_x, screen_y);
-		glTexCoord2f(xf, yf);		glVertex2i(screen_x + w, screen_y);
-		glTexCoord2f(xf, yo);		glVertex2i(screen_x + w, screen_y + h);
-		glTexCoord2f(xo, yo);		glVertex2i(screen_x, screen_y + h);
-		//glTexCoord2f(xo,yo);	glVertex2i(screen_x  ,screen_y);
-		//glTexCoord2f(xf,yo);	glVertex2i(screen_x+w,screen_y);
-		//glTexCoord2f(xf,yf);	glVertex2i(screen_x+w,screen_y+h);
-		//glTexCoord2f(xo,yf);	glVertex2i(screen_x  ,screen_y+h);
+		if (sentit == 'L') {
+			glTexCoord2f(xo, yf);		glVertex2i(screen_x + w, screen_y); 
+			glTexCoord2f(xf, yf);		glVertex2i(screen_x, screen_y);
+			glTexCoord2f(xf, yo);		glVertex2i(screen_x, screen_y + h);
+			glTexCoord2f(xo, yo);		glVertex2i(screen_x + w, screen_y + h);
+		}
+		else {	//'R'
+			glTexCoord2f(xo, yf);		glVertex2i(screen_x, screen_y);
+			glTexCoord2f(xf, yf);		glVertex2i(screen_x + w, screen_y);
+			glTexCoord2f(xf, yo);		glVertex2i(screen_x + w, screen_y + h);
+			glTexCoord2f(xo, yo);		glVertex2i(screen_x, screen_y + h);
+		}
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);

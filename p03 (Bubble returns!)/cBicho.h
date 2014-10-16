@@ -38,7 +38,7 @@ public:
 	bool CollidesMapWall(int *map,bool right);
 	bool CollidesMapFloor(int *map);
 	void GetArea(cRect *rc);
-	void DrawRect(int tex_id,float xo,float yo,float xf,float yf);
+	void DrawRect(int tex_id,float xo,float yo,float xf,float yf, char sentit);
 
 	void MoveRight(int *map);
 	void MoveLeft(int *map);

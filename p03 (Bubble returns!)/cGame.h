@@ -3,9 +3,10 @@
 #include "cScene.h"
 #include "cPlayer.h"
 #include "cData.h"
+#include "enemyS.h"
 
-#define GAME_WIDTH	640
-#define GAME_HEIGHT 480
+#define GAME_WIDTH	1266//640
+#define GAME_HEIGHT 668//480
 
 class cGame
 {
@@ -30,4 +31,6 @@ private:
 	cScene Scene;
 	cPlayer Player;
 	cData Data;
+	enemyS Enemy;
+	enemyS Enemy2;
 };

@@ -38,6 +38,19 @@ bool cGame::Init()
 	Player.SetWidthHeight(32,32);
 	Player.SetState(STATE_LOOKRIGHT);
 
+	//Easy rebel shotgun initialization
+	res = Data.LoadImage(IMG_ENEMY, "Sprites/rebel_infantry_shotgun_R1.png", GL_RGBA);
+	if (!res) return false;
+	Enemy.SetWidthHeight(66, 40);
+	Enemy.SetTile(10, 6);
+	Enemy.SetWidthHeight(66, 40);
+	Enemy.SetState(STATE_LOOKRIGHT);
+	Enemy2.SetWidthHeight(66, 40);
+	Enemy2.SetTile(18, 6);
+	Enemy2.SetWidthHeight(66, 40);
+	Enemy2.SetState(STATE_LOOKLEFT);
+
+
 	return res;
 }
 
@@ -76,9 +89,15 @@ bool cGame::Process()
 	else if (keys[GLUT_KEY_RIGHT])	Player.MoveRight(Scene.GetMap());
 	else Player.Stop();
 
+	int x2, y2;
+	Player.GetPosition(&x2, &y2);
+	Enemy.ShotRight(x2, y2);
+	Enemy2.ShotLeft(x2, y2);
 
 	//Game Logic
 	Player.Logic(Scene.GetMap());
+	//Enemy.Logic(Scene.GetMap());
+	//Enemy2.Logic(Scene.GetMap());
 	return res;
 }
 
@@ -89,11 +108,13 @@ void cGame::Render()
 	
 	glLoadIdentity();
 	int x, y;
-	Player.GetPosition(&x,&y);
+	Player.GetPosition(&x, &y);
 
 	glTranslatef((-1*x)+64, 0.0f, 0.0f);
 	Scene.Draw(Data.GetID(IMG_BLOCKS));
 	Player.Draw(Data.GetID(IMG_PLAYER));
+	Enemy.Draw(Data.GetID(IMG_ENEMY));
+	Enemy2.Draw(Data.GetID(IMG_ENEMY));
 
 	glutSwapBuffers();
 }

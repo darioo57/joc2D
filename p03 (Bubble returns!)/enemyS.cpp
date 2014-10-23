@@ -3,7 +3,7 @@
 enemyS::enemyS() {}
 enemyS::~enemyS(){}
 
-void enemyS::Draw(int tex_id)
+void enemyS::Draw(int tex_id, int tex_id_bala)
 {
 	float xo = 0.0f, yo = 0.0f, xf = 0.0f, yf = 0.0f;
 	char sentit = 'L';
@@ -35,6 +35,6 @@ void enemyS::Draw(int tex_id)
 	xf = xo + 0.0909f;
 	yf = yo + 0.5f;
 
-	if (sentit == 'L') DrawRect(tex_id, xo, yo, xf, yf, sentit);
-	else DrawRect(tex_id, xo, yo, xf, yf, sentit);
+	if (sentit == 'L') DrawRect(tex_id, xo, yo, xf, yf, sentit, tex_id_bala);
+	else DrawRect(tex_id, xo, yo, xf, yf, sentit, tex_id_bala);
 }

@@ -45,10 +45,18 @@ bool cGame::Init()
 	Enemy.SetTile(10, 6);
 	Enemy.SetWidthHeight(66, 40);
 	Enemy.SetState(STATE_LOOKRIGHT);
+	Enemy.SetBulletSize(4, 4);
 	Enemy2.SetWidthHeight(66, 40);
 	Enemy2.SetTile(18, 6);
 	Enemy2.SetWidthHeight(66, 40);
 	Enemy2.SetState(STATE_LOOKLEFT);
+	Enemy2.SetBulletSize(4, 4);
+
+	res = Data.LoadImage(IMG_BALA_BOLA, "Sprites/bala_bola.png", GL_RGBA);
+	if (!res) return false;
+	res = Data.LoadImage(IMG_BALA_PISTOLA, "Sprites/bala_pistola.png", GL_RGBA);
+	if (!res) return false;
+
 	return res;
 }
 
@@ -126,8 +134,8 @@ void cGame::Render()
 	}
 	Scene.Draw(Data.GetID(IMG_BLOCKS));
 	Player.Draw(Data.GetID(IMG_PLAYER));
-	Enemy.Draw(Data.GetID(IMG_ENEMY));
-	Enemy2.Draw(Data.GetID(IMG_ENEMY));
+	Enemy.Draw(Data.GetID(IMG_ENEMY), Data.GetID(IMG_BALA_BOLA));
+	Enemy2.Draw(Data.GetID(IMG_ENEMY), Data.GetID(IMG_BALA_BOLA));
 
 	glutSwapBuffers();
 }

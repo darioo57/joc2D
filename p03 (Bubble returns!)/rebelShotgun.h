@@ -38,7 +38,8 @@ public:
 	bool CollidesMapWall(int *map, bool right);
 	bool CollidesMapFloor(int *map);
 	void GetArea(cRectRebel *rc);
-	void DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit);
+	void SetBulletSize(int bposx, int bposy);
+	void DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit, int tex_id_bala);
 
 	void MoveRight(int *map);
 	void MoveLeft(int *map);
@@ -58,6 +59,8 @@ private:
 	int x, y;
 	int w, h;
 	int state;
+	int bx, by;
+	int vx;
 
 	bool jumping;
 	int jump_alfa;

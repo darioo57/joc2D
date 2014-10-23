@@ -11,6 +11,6 @@ public:
 	enemyS();
 	~enemyS();
 
-	void Draw(int tex_id);
+	void Draw(int tex_id, int tex_id_bala);
 };
 

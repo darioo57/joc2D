@@ -115,12 +115,21 @@ void rebelShotgun::GetArea(cRectRebel *rc)
 	rc->bottom = y;
 	rc->top = y + h;
 }
-void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit)
+
+void rebelShotgun::SetBulletSize(int bposx, int bposy)
+{
+	bx = bposx;
+	by = bposy;
+}
+
+void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit, int tex_id_bala)
 {
 	int screen_x, screen_y;
 
 	screen_x = x + SCENE_Xo;
 	screen_y = y + SCENE_Yo + (BLOCK_SIZE - TILE_SIZE);
+	vx = vx + 1;
+	if (xo == 0.0f && yo == 0.0f) vx = 0;
 
 	glEnable(GL_TEXTURE_2D);
 
@@ -134,7 +143,7 @@ void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, 
 		glTexCoord2f(xf, yo);		glVertex2i(screen_x, screen_y + h);
 		glTexCoord2f(xo, yo);		glVertex2i(screen_x + w, screen_y + h);
 	}
-	else {	//'R'
+	else {	//'L'
 		glTexCoord2f(xo, yf);		glVertex2i(screen_x, screen_y);
 		glTexCoord2f(xf, yf);		glVertex2i(screen_x + w, screen_y);
 		glTexCoord2f(xf, yo);		glVertex2i(screen_x + w, screen_y + h);
@@ -142,6 +151,23 @@ void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, 
 	}
 	glEnd();
 
+	if (vx != 0) {
+		glBindTexture(GL_TEXTURE_2D, tex_id_bala);
+		glBegin(GL_QUADS);
+		if (sentit == 'R') {
+			glTexCoord2f(0, 1);		glVertex2i(vx - 22 + screen_x + bx + w, screen_y + 23);
+			glTexCoord2f(1, 1);		glVertex2i(vx - 22 + screen_x + w, screen_y + 23);
+			glTexCoord2f(1, 0);		glVertex2i(vx - 22 + screen_x + w, screen_y + by + 23);
+			glTexCoord2f(0, 0);		glVertex2i(vx - 22 + screen_x + bx + w, screen_y + by + 23);
+		}
+		else {	//'L'
+			glTexCoord2f(0, 1);		glVertex2i(vx*(-1) + 20 + screen_x, screen_y + 23);
+			glTexCoord2f(1, 1);		glVertex2i(vx*(-1) + 20 + screen_x + bx, screen_y + 23);
+			glTexCoord2f(1, 0);		glVertex2i(vx*(-1) + 20 + screen_x + bx, screen_y + by + 23);
+			glTexCoord2f(0, 0);		glVertex2i(vx*(-1) + 20 + screen_x, screen_y + by + 23);
+		}
+		glEnd();
+	}
 	glDisable(GL_TEXTURE_2D);
 }
 

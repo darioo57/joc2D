@@ -69,16 +69,27 @@ bool cGame::Process()
 {
 	bool res=true;
 	//Process Input
-	if (keys[27])	res = false;
+	int x, y;
+	Player.GetPosition(&x, &y);
+	if ((x/TILE_SIZE) > -1)
+	{
+		if (keys[27])	res = false;
 
-	if (keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
-	if (keys[GLUT_KEY_LEFT])			Player.MoveLeft(Scene.GetMap());
-	else if (keys[GLUT_KEY_RIGHT])	Player.MoveRight(Scene.GetMap());
-	else Player.Stop();
+		if (keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
+		if (keys[GLUT_KEY_LEFT])			Player.MoveLeft(Scene.GetMap());
+		else if (keys[GLUT_KEY_RIGHT])	Player.MoveRight(Scene.GetMap());
+		else Player.Stop();
 
 
-	//Game Logic
-	Player.Logic(Scene.GetMap());
+		//Game Logic
+		Player.Logic(Scene.GetMap());
+	}
+	else
+	{
+		Player.MoveLeftExtrem(Scene.GetMap());
+		x++;
+		Player.SetPosition(x, y);
+	}
 	return res;
 }
 
@@ -90,10 +101,13 @@ void cGame::Render()
 	glLoadIdentity();
 	int x, y;
 	Player.GetPosition(&x,&y);
-
-	glTranslatef((-1*x)+64, 0.0f, 0.0f);
-	Scene.Draw(Data.GetID(IMG_BLOCKS));
-	Player.Draw(Data.GetID(IMG_PLAYER));
+	
+	if (x-(4*16) >= 0)
+	{
+		glTranslatef((-1*x)+4*16, 0.0f, 0.0f);
+	}
+		Scene.Draw(Data.GetID(IMG_BLOCKS));
+		Player.Draw(Data.GetID(IMG_PLAYER));
 
 	glutSwapBuffers();
 }

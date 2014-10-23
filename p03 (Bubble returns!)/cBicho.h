@@ -42,7 +42,6 @@ public:
 
 	void MoveRight(int *map);
 	void MoveLeft(int *map);
-	void MoveLeftExtrem(int *map);
 	void Jump(int *map);
 	void Stop();
 	void Logic(int *map);

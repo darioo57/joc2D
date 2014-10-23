@@ -173,35 +173,6 @@ void cBicho::MoveLeft(int *map)
 		}
 	}
 }
-
-void cBicho::MoveLeftExtrem(int *map)
-{
-	int xaux;
-
-	//Whats next tile?
-	if ((x % TILE_SIZE) == 0)
-	{
-		xaux = x;
-		//x -= STEP_LENGTH;
-
-		if (CollidesMapWall(map, false))
-		{
-			x = xaux;
-			state = STATE_LOOKLEFT;
-		}
-	}
-	//Advance, no problem
-	else
-	{
-		//x -= STEP_LENGTH;
-		if (state != STATE_WALKLEFT)
-		{
-			state = STATE_WALKLEFT;
-			seq = 0;
-			delay = 0;
-		}
-	}
-}
 void cBicho::MoveRight(int *map)
 {
 	int xaux;

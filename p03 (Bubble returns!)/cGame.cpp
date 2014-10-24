@@ -34,7 +34,7 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_PLAYER,"Sprites/metalslug_P1.png",GL_RGBA);
 	if(!res) return false;
 	Player.SetWidthHeight(32,32);
-	Player.SetTile(4,10);
+	Player.SetTile(START_PLAYERX,START_PLAYERY);
 	Player.SetWidthHeight(32,32);
 	Player.SetState(STATE_LOOKRIGHT);
 
@@ -56,6 +56,8 @@ bool cGame::Init()
 	if (!res) return false;
 	res = Data.LoadImage(IMG_BALA_PISTOLA, "Sprites/bala_pistola.png", GL_RGBA);
 	if (!res) return false;
+
+	maximumRightTranslation = (SCENE_WIDTH-FINISH_PLAYERX-START_PLAYERX)*TILE_SIZE;
 
 	return res;
 }
@@ -90,7 +92,7 @@ bool cGame::Process()
 	//Process Input
 	int x, y;
 	Player.GetPosition(&x, &y);
-	if ((x / TILE_SIZE) > -1)
+	if ((x/TILE_SIZE >= 0) && (x/TILE_SIZE <= 100))
 	{
 		if (keys[27])	res = false;
 
@@ -112,9 +114,8 @@ bool cGame::Process()
 	}
 	else
 	{
-		Player.MoveLeftExtrem(Scene.GetMap());
-		x++;
-		Player.SetPosition(x, y);
+		Player.Stop();
+		Player.Logic(Scene.GetMap());
 	}
 	return res;
 }
@@ -127,10 +128,14 @@ void cGame::Render()
 	glLoadIdentity();
 	int x, y;
 	Player.GetPosition(&x,&y);
-
-	if (x - (4 * 16) >= 0)
+	/*Mirem no sortir del mapa*/
+	if ((x/TILE_SIZE - START_PLAYERX) >= 0 && (x/TILE_SIZE + FINISH_PLAYERX < SCENE_WIDTH))
 	{
-		glTranslatef((-1 * x) + 4 * 16, 0.0f, 0.0f);
+		glTranslatef(-x + START_PLAYERX*TILE_SIZE, 0.0f, 0.0f);
+	}
+	if (x / TILE_SIZE + FINISH_PLAYERX >= SCENE_WIDTH)
+	{
+		glTranslatef(-maximumRightTranslation, 0.0f, 0.0f);
 	}
 	Scene.Draw(Data.GetID(IMG_BLOCKS));
 	Player.Draw(Data.GetID(IMG_PLAYER));

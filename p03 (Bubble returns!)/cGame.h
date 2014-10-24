@@ -7,6 +7,9 @@
 
 #define GAME_WIDTH	1266//640
 #define GAME_HEIGHT 668//480
+#define START_PLAYERX 4
+#define START_PLAYERY 10
+#define FINISH_PLAYERX 73
 
 class cGame
 {
@@ -33,4 +36,5 @@ private:
 	cData Data;
 	enemyS Enemy;
 	enemyS Enemy2;
+	int maximumRightTranslation;
 };

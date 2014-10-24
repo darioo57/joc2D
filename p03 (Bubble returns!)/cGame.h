@@ -5,11 +5,11 @@
 #include "cData.h"
 #include "enemyS.h"
 
-#define GAME_WIDTH	1266//640
-#define GAME_HEIGHT 668//480
+#define GAME_WIDTH	80*16
+#define GAME_HEIGHT 40*16
 #define START_PLAYERX 4
 #define START_PLAYERY 10
-#define FINISH_PLAYERX 73
+#define FINISH_PLAYERX (GAME_WIDTH/16)-6
 
 class cGame
 {

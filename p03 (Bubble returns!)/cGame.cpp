@@ -34,7 +34,7 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_PLAYER,"Sprites/metalslug_P1.png",GL_RGBA);
 	if(!res) return false;
 	Player.SetWidthHeight(32,32);
-	Player.SetTile(START_PLAYERX,START_PLAYERY);
+	Player.SetTile(80,START_PLAYERY);
 	Player.SetWidthHeight(32,32);
 	Player.SetState(STATE_LOOKRIGHT);
 
@@ -57,7 +57,7 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_BALA_PISTOLA, "Sprites/bala_pistola.png", GL_RGBA);
 	if (!res) return false;
 
-	maximumRightTranslation = (SCENE_WIDTH-FINISH_PLAYERX-START_PLAYERX)*TILE_SIZE;
+	maximumRightTranslation = (SCENE_WIDTH-FINISH_PLAYERX+START_PLAYERX+4)*TILE_SIZE;
 
 	return res;
 }
@@ -92,7 +92,8 @@ bool cGame::Process()
 	//Process Input
 	int x, y;
 	Player.GetPosition(&x, &y);
-	if ((x/TILE_SIZE >= 0) && (x/TILE_SIZE <= 100))
+	/*Deixem moure si estem dins del mapa*/
+	if ((x/TILE_SIZE >= 0) && (x/TILE_SIZE < SCENE_WIDTH-1))
 	{
 		if (keys[27])	res = false;
 
@@ -114,8 +115,15 @@ bool cGame::Process()
 	}
 	else
 	{
-		Player.Stop();
-		Player.Logic(Scene.GetMap());
+		/*Identifiquem a quin limit estem*/
+		if (x / TILE_SIZE < 0)
+		{
+			Player.MoveRight(Scene.GetMap());
+		}
+		else
+		{
+			Player.MoveLeft(Scene.GetMap());
+		}
 	}
 	return res;
 }

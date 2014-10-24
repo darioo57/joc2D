@@ -34,7 +34,7 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_PLAYER,"Sprites/metalslug_P1.png",GL_RGBA);
 	if(!res) return false;
 	Player.SetWidthHeight(32,32);
-	Player.SetTile(80,START_PLAYERY);
+	Player.SetTile(START_PLAYERX, START_PLAYERY);
 	Player.SetWidthHeight(32,32);
 	Player.SetState(STATE_LOOKRIGHT);
 

@@ -41,9 +41,9 @@ void AppIdle()
 
 }
 
-void main(int argc, char** argv)
+void inicialitza_joc(int argc, char** argv)
 {
-	int res_x,res_y,pos_x,pos_y;
+	int res_x, res_y, pos_x, pos_y;
 
 	//GLUT initialization
 	glutInit(&argc, argv);
@@ -54,11 +54,11 @@ void main(int argc, char** argv)
 	//Create centered window
 	res_x = glutGet(GLUT_SCREEN_WIDTH);
 	res_y = glutGet(GLUT_SCREEN_HEIGHT);
-	pos_x = (res_x>>1)-(GAME_WIDTH>>1);
-	pos_y = (res_y>>1)-(GAME_HEIGHT>>1);
-	
-	glutInitWindowPosition(pos_x,pos_y);
-	glutInitWindowSize(GAME_WIDTH,GAME_HEIGHT);
+	pos_x = (res_x >> 1) - (GAME_WIDTH >> 1);
+	pos_y = (res_y >> 1) - (GAME_HEIGHT >> 1);
+
+	glutInitWindowPosition(pos_x, pos_y);
+	glutInitWindowSize(GAME_WIDTH, GAME_HEIGHT);
 	glutCreateWindow("Bubble returns!");
 
 	/*glutGameModeString("800x600:32");
@@ -68,10 +68,10 @@ void main(int argc, char** argv)
 	//glutSetCursor(GLUT_CURSOR_NONE);
 
 	//Register callback functions
-	glutDisplayFunc(AppRender);			
-	glutKeyboardFunc(AppKeyboard);		
-	glutKeyboardUpFunc(AppKeyboardUp);	
-	glutSpecialFunc(AppSpecialKeys);	
+	glutDisplayFunc(AppRender);
+	glutKeyboardFunc(AppKeyboard);
+	glutKeyboardUpFunc(AppKeyboardUp);
+	glutSpecialFunc(AppSpecialKeys);
 	glutSpecialUpFunc(AppSpecialKeysUp);
 	glutMouseFunc(AppMouse);
 	glutIdleFunc(AppIdle);
@@ -81,5 +81,10 @@ void main(int argc, char** argv)
 	time0 = glutGet(GLUT_ELAPSED_TIME);
 
 	//Application loop
-	glutMainLoop();	
+	glutMainLoop();
+}
+
+void main(int argc, char** argv)
+{
+	inicialitza_joc(argc, argv);
 }

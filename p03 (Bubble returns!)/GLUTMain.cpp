@@ -85,9 +85,9 @@ void load_menu(int argc, char** argv)
 	bool carrega = false;
 	carrega = Menu.init();
 	time0 = glutGet(GLUT_ELAPSED_TIME);
-	menu = false;
+	menu = true;
 	
-	//glutMainLoop();
+	glutMainLoop();
 }
 
 void inicialitza_joc()
@@ -103,5 +103,5 @@ void inicialitza_joc()
 void main(int argc, char** argv)
 {
 	load_menu(argc, argv);
-	inicialitza_joc();
+	//inicialitza_joc();
 }

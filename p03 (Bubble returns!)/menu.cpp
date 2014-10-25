@@ -55,15 +55,19 @@ void menu::Render()
 	screen_y = 150;
 	/*Amplada, Alçacada repectivament*/
 	w = 200; h = 50;
-	int IDImage = Data.GetID(IMG_INICI_JOC);
+	int ID = Data.GetID(IMG_INICI_JOC);
 
 	glLoadIdentity();
+	glEnable(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, ID);
 	glBegin(GL_QUADS);
 	glTexCoord2f(xo, yf);		glVertex2i(screen_x + w, screen_y);
 	glTexCoord2f(xf, yf);		glVertex2i(screen_x, screen_y);
 	glTexCoord2f(xf, yo);		glVertex2i(screen_x, screen_y + h);
 	glTexCoord2f(xo, yo);		glVertex2i(screen_x + w, screen_y + h);
 	glEnd();
+	glDisable(GL_TEXTURE_2D);
 
 	glutSwapBuffers();
 }

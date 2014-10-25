@@ -12,6 +12,7 @@
 #define IMG_ENEMY   2
 #define IMG_BALA_PISTOLA 3
 #define IMG_BALA_BOLA 4
+#define IMG_INICI_JOC 5
 /*
 #define IMG_ENEMY1	2
 #define IMG_ENEMY2	3

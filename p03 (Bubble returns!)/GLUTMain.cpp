@@ -6,7 +6,9 @@
 #pragma comment(linker, "/subsystem:\"windows\" /entry:\"mainCRTStartup\"")
 
 cGame Game;
+menu Menu;
 float time0;
+bool menu;
 
 void AppRender()
 {
@@ -34,14 +36,18 @@ void AppMouse(int button, int state, int x, int y)
 }
 void AppIdle()
 {
-	if ((glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+	if (menu && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+		time0 = glutGet(GLUT_ELAPSED_TIME);
+		if (!Menu.Loop()) exit(0);
+	}
+	else if (!menu && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
 		time0 = glutGet(GLUT_ELAPSED_TIME);
 		if (!Game.Loop()) exit(0);
 	}
 
 }
 
-void inicialitza_joc(int argc, char** argv)
+void load_menu(int argc, char** argv)
 {
 	int res_x, res_y, pos_x, pos_y;
 
@@ -76,6 +82,16 @@ void inicialitza_joc(int argc, char** argv)
 	glutMouseFunc(AppMouse);
 	glutIdleFunc(AppIdle);
 
+	bool carrega = false;
+	carrega = Menu.init();
+	time0 = glutGet(GLUT_ELAPSED_TIME);
+	menu = false;
+	
+	//glutMainLoop();
+}
+
+void inicialitza_joc()
+{
 	//Game initializations
 	Game.Init();
 	time0 = glutGet(GLUT_ELAPSED_TIME);
@@ -86,5 +102,6 @@ void inicialitza_joc(int argc, char** argv)
 
 void main(int argc, char** argv)
 {
-	inicialitza_joc(argc, argv);
+	load_menu(argc, argv);
+	inicialitza_joc();
 }

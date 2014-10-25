@@ -4,6 +4,7 @@
 #include "cPlayer.h"
 #include "cData.h"
 #include "enemyS.h"
+#include "menu.h"
 
 #define GAME_WIDTH	80*16
 #define GAME_HEIGHT 40*16

@@ -1,5 +1,8 @@
 #include "enemyS.h"
 
+int aaa = -1, bbb = -1;
+bool bL = false, bR = false;
+
 enemyS::enemyS() {}
 enemyS::~enemyS(){}
 
@@ -35,6 +38,36 @@ void enemyS::Draw(int tex_id, int tex_id_bala)
 	xf = xo + 0.0909f;
 	yf = yo + 0.5f;
 
-	if (sentit == 'L') DrawRect(tex_id, xo, yo, xf, yf, sentit, tex_id_bala);
-	else DrawRect(tex_id, xo, yo, xf, yf, sentit, tex_id_bala);
+	if (sentit == 'L') {
+		DrawRect(tex_id, xo, yo, xf, yf, sentit);
+		for (int i = 0; i < 100; ++i) {
+			if (i <= aaa) {
+				DrawRectBullet(sentit, tex_id_bala, i);
+			}
+		}
+		if (aaa < 99) {
+			if (GetFrame() == 1) bL = true;
+			if (bL && GetFrame() != 1) {
+				aaa = aaa + 1;
+				bL = false;
+			}
+		}
+		else aaa = 0;
+	}
+	else {
+		DrawRect(tex_id, xo, yo, xf, yf, sentit);	
+		for (int i = 0; i < 100; ++i) {
+			if (i <= bbb) {
+				DrawRectBullet(sentit, tex_id_bala, i);
+			}
+		}
+		if (bbb < 99) {
+			if (GetFrame() == 1) bR = true;
+			if (bR && GetFrame() != 1) {
+				bbb = bbb + 1;
+				bR = false;
+			}
+		}
+		else bbb = 0;
+	}
 }

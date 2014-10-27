@@ -2,6 +2,9 @@
 
 #include "cTexture.h"
 #include "Globals.h"
+#include <vector>
+#include <iostream>
+using namespace std;
 
 #define FRAME_DELAY		8
 #define STEP_LENGTH		2
@@ -38,8 +41,10 @@ public:
 	bool CollidesMapWall(int *map, bool right);
 	bool CollidesMapFloor(int *map);
 	void GetArea(cRectRebel *rc);
+	vector<int> GetBulletPos();
 	void SetBulletSize(int bposx, int bposy);
-	void DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit, int tex_id_bala);
+	void DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit);
+	void DrawRectBullet(char sentit, int tex_id_bala, int numb);
 
 	void MoveRight(int *map);
 	void MoveLeft(int *map);
@@ -60,7 +65,8 @@ private:
 	int w, h;
 	int state;
 	int bx, by;
-	int vx;
+	vector<int> vx;
+	vector<int> vpos;
 
 	bool jumping;
 	int jump_alfa;

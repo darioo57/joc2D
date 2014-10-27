@@ -1,6 +1,7 @@
 #include "cGame.h"
 #include "Globals.h"
 
+bool dead = false;
 
 cGame::cGame(void)
 {
@@ -48,6 +49,7 @@ bool cGame::Init()
 	Enemy.SetBulletSize(4, 4);
 	Enemy2.SetWidthHeight(66, 40);
 	Enemy2.SetTile(18, 6);
+
 	Enemy2.SetWidthHeight(66, 40);
 	Enemy2.SetState(STATE_LOOKLEFT);
 	Enemy2.SetBulletSize(4, 4);
@@ -55,6 +57,8 @@ bool cGame::Init()
 	res = Data.LoadImage(IMG_BALA_BOLA, "Sprites/bala_bola.png", GL_RGBA);
 	if (!res) return false;
 	res = Data.LoadImage(IMG_BALA_PISTOLA, "Sprites/bala_pistola.png", GL_RGBA);
+	if (!res) return false;
+	res = Data.LoadImage(IMG_PLAYER_DEAD, "Sprites/metalslug_dead.png", GL_RGBA);
 	if (!res) return false;
 
 	maximumRightTranslation = (SCENE_WIDTH-FINISH_PLAYERX+START_PLAYERX+4)*TILE_SIZE;
@@ -93,14 +97,16 @@ bool cGame::Process()
 	int x, y;
 	Player.GetPosition(&x, &y);
 	/*Deixem moure si estem dins del mapa*/
-	if ((x/TILE_SIZE >= 0) && (x/TILE_SIZE < SCENE_WIDTH-1))
+	if ((x / TILE_SIZE >= 0) && (x / TILE_SIZE < SCENE_WIDTH - 1))
 	{
 		if (keys[27])	res = false;
-
-		if (keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
-		if (keys[GLUT_KEY_LEFT])			Player.MoveLeft(Scene.GetMap());
-		else if (keys[GLUT_KEY_RIGHT])	Player.MoveRight(Scene.GetMap());
-		else Player.Stop();
+		if (!dead)
+		{
+			if (keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
+			if (keys[GLUT_KEY_LEFT])			Player.MoveLeft(Scene.GetMap());
+			else if (keys[GLUT_KEY_RIGHT])	Player.MoveRight(Scene.GetMap());
+			else Player.Stop();
+		}
 
 		int x2, y2;
 		Player.GetPosition(&x2, &y2);
@@ -110,8 +116,12 @@ bool cGame::Process()
 
 		//Game Logic
 		Player.Logic(Scene.GetMap());
-		//Enemy.Logic(Scene.GetMap());
-		//Enemy2.Logic(Scene.GetMap());
+		bool l1 = Player.LogicBullets(Enemy.GetBulletPos());
+		bool l2 = Player.LogicBullets(Enemy2.GetBulletPos());
+		if (l1 || l2) {
+			dead = true;
+			Player.MoveRight(Scene.GetMap());
+		}
 	}
 	else
 	{
@@ -146,7 +156,9 @@ void cGame::Render()
 		glTranslatef(-maximumRightTranslation, 0.0f, 0.0f);
 	}
 	Scene.Draw(Data.GetID(IMG_BLOCKS));
-	Player.Draw(Data.GetID(IMG_PLAYER));
+
+	if (dead) Player.Draw(Data.GetID(IMG_PLAYER_DEAD));
+	else Player.Draw(Data.GetID(IMG_PLAYER));
 	Enemy.Draw(Data.GetID(IMG_ENEMY), Data.GetID(IMG_BALA_BOLA));
 	Enemy2.Draw(Data.GetID(IMG_ENEMY), Data.GetID(IMG_BALA_BOLA));
 

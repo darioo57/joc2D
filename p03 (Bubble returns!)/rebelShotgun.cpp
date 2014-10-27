@@ -6,7 +6,8 @@ rebelShotgun::rebelShotgun(void)
 {
 	seq = 0;
 	delay = 0;
-
+	vx = vector<int>(100, 0);
+	vpos = vector<int>(100, 0);
 	jumping = false;
 }
 rebelShotgun::~rebelShotgun(void){}
@@ -116,20 +117,24 @@ void rebelShotgun::GetArea(cRectRebel *rc)
 	rc->top = y + h;
 }
 
+
+vector<int> rebelShotgun::GetBulletPos()
+{
+	return vpos;
+}
+
 void rebelShotgun::SetBulletSize(int bposx, int bposy)
 {
 	bx = bposx;
 	by = bposy;
 }
 
-void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit, int tex_id_bala)
+void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit)
 {
 	int screen_x, screen_y;
 
 	screen_x = x + SCENE_Xo;
 	screen_y = y + SCENE_Yo + (BLOCK_SIZE - TILE_SIZE);
-	vx = vx + 1;
-	if (xo == 0.0f && yo == 0.0f) vx = 0;
 
 	glEnable(GL_TEXTURE_2D);
 
@@ -151,20 +156,35 @@ void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, 
 	}
 	glEnd();
 
-	if (vx != 0) {
+	glDisable(GL_TEXTURE_2D);
+}
+
+void rebelShotgun::DrawRectBullet(char sentit, int tex_id_bala, int numb)
+{
+	int screen_x, screen_y;
+
+	screen_x = x + SCENE_Xo;
+	screen_y = y + SCENE_Yo + (BLOCK_SIZE - TILE_SIZE);
+	vx[numb] += 1;
+
+	glEnable(GL_TEXTURE_2D);
+	
+	if (vx[numb] != 0) {
 		glBindTexture(GL_TEXTURE_2D, tex_id_bala);
 		glBegin(GL_QUADS);
 		if (sentit == 'R') {
-			glTexCoord2f(0, 1);		glVertex2i(vx - 22 + screen_x + bx + w, screen_y + 23);
-			glTexCoord2f(1, 1);		glVertex2i(vx - 22 + screen_x + w, screen_y + 23);
-			glTexCoord2f(1, 0);		glVertex2i(vx - 22 + screen_x + w, screen_y + by + 23);
-			glTexCoord2f(0, 0);		glVertex2i(vx - 22 + screen_x + bx + w, screen_y + by + 23);
+			vpos[numb] = vx[numb] + screen_x;
+			glTexCoord2f(0, 1);		glVertex2i(vx[numb] - 22 + screen_x + bx + w, screen_y + 23);
+			glTexCoord2f(1, 1);		glVertex2i(vx[numb] - 22 + screen_x + w, screen_y + 23);
+			glTexCoord2f(1, 0);		glVertex2i(vx[numb] - 22 + screen_x + w, screen_y + by + 23);
+			glTexCoord2f(0, 0);		glVertex2i(vx[numb] - 22 + screen_x + bx + w, screen_y + by + 23);
 		}
 		else {	//'L'
-			glTexCoord2f(0, 1);		glVertex2i(vx*(-1) + 20 + screen_x, screen_y + 23);
-			glTexCoord2f(1, 1);		glVertex2i(vx*(-1) + 20 + screen_x + bx, screen_y + 23);
-			glTexCoord2f(1, 0);		glVertex2i(vx*(-1) + 20 + screen_x + bx, screen_y + by + 23);
-			glTexCoord2f(0, 0);		glVertex2i(vx*(-1) + 20 + screen_x, screen_y + by + 23);
+			vpos[numb] = vx[numb] * (-1) + screen_x;
+			glTexCoord2f(0, 1);		glVertex2i(vx[numb] * (-1) + 20 + screen_x, screen_y + 23);
+			glTexCoord2f(1, 1);		glVertex2i(vx[numb] * (-1) + 20 + screen_x + bx, screen_y + 23);
+			glTexCoord2f(1, 0);		glVertex2i(vx[numb] * (-1) + 20 + screen_x + bx, screen_y + by + 23);
+			glTexCoord2f(0, 0);		glVertex2i(vx[numb] * (-1) + 20 + screen_x, screen_y + by + 23);
 		}
 		glEnd();
 	}
@@ -233,7 +253,7 @@ void rebelShotgun::ShotRight(int x2, int y2)
 {
 	int x, y;
 	GetPosition(&x, &y);
-	if (x2 > x) {	//&& y2 <= y + 30) {	//y+30, base enemic + alcada arma
+	if (x2 > x) {
 		if (state != STATE_WALKRIGHT)
 		{
 			state = STATE_WALKRIGHT;
@@ -248,7 +268,7 @@ void rebelShotgun::ShotLeft(int x2, int y2)
 {
 	int x, y;
 	GetPosition(&x, &y);
-	if (x2 < x) {	// && y2 <= y + 30) {	//y+30, base enemic + alcada arma
+	if (x2 < x) {
 		if (state != STATE_WALKLEFT)
 		{
 			state = STATE_WALKLEFT;

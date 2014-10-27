@@ -2,6 +2,9 @@
 
 #include "cTexture.h"
 #include "Globals.h"
+#include <vector>
+#include <iostream>
+using namespace std;
 
 #define FRAME_DELAY		8
 #define STEP_LENGTH		2
@@ -46,6 +49,7 @@ public:
 	void Jump(int *map);
 	void Stop();
 	void Logic(int *map);
+	bool LogicBullets(vector<int> vp);
 
 	int  GetState();
 	void SetState(int s);

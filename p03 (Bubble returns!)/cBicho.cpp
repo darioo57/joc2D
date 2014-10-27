@@ -255,6 +255,15 @@ void cBicho::Logic(int *map)
 			y -= (2*STEP_LENGTH);
 	}
 }
+
+bool cBicho::LogicBullets(vector<int> vp)
+{
+	for (int j = 0; j < vp.size(); ++j) {
+		if (x == vp[j]) return true; //tocat en eix X
+	}
+	return false;
+}
+
 void cBicho::NextFrame(int max)
 {
 	delay++;

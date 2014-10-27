@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cData.h"
 #include "cTexture.h"
 
 #define SCENE_Xo		TILE_SIZE
@@ -29,4 +30,5 @@ private:
 	int id_DL;								//actual level display list
 	int actualX;
 	int actualY;
+	cData Data;
 };

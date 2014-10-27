@@ -5,6 +5,7 @@
 #include "cData.h"
 #include "enemyS.h"
 #include "menu.h"
+#include "yeti.h"
 
 #define GAME_WIDTH	80*16
 #define GAME_HEIGHT 40*16
@@ -37,5 +38,6 @@ private:
 	cData Data;
 	enemyS Enemy;
 	enemyS Enemy2;
+	yeti Yeti;
 	int maximumRightTranslation;
 };

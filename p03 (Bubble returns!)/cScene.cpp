@@ -1,5 +1,6 @@
 #include "cScene.h"
 #include "Globals.h"
+#include "cGame.h"
 
 cScene::cScene(void)
 {

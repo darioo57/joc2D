@@ -100,6 +100,7 @@ bool cGame::Process()
 	if ((x / TILE_SIZE >= 0) && (x / TILE_SIZE < SCENE_WIDTH - 1))
 	{
 		if (keys[27])	res = false;
+
 		if (!dead)
 		{
 			if (keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
@@ -118,21 +119,21 @@ bool cGame::Process()
 		Player.Logic(Scene.GetMap());
 		bool l1 = Player.LogicBullets(Enemy.GetBulletPos());
 		bool l2 = Player.LogicBullets(Enemy2.GetBulletPos());
-		if (l1 || l2) {
-			dead = true;
-			Player.MoveRight(Scene.GetMap());
-		}
+		if (l1 || l2) dead = true;
 	}
 	else
 	{
 		/*Identifiquem a quin limit estem*/
-		if (x / TILE_SIZE < 0)
+		if (!dead)
 		{
-			Player.MoveRight(Scene.GetMap());
-		}
-		else
-		{
-			Player.MoveLeft(Scene.GetMap());
+			if (x / TILE_SIZE < 0)
+			{
+				Player.MoveRight(Scene.GetMap());
+			}
+			else
+			{
+				Player.MoveLeft(Scene.GetMap());
+			}
 		}
 	}
 	return res;
@@ -142,12 +143,12 @@ bool cGame::Process()
 void cGame::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	
+
 	glLoadIdentity();
 	int x, y;
-	Player.GetPosition(&x,&y);
+	Player.GetPosition(&x, &y);
 	/*Mirem no sortir del mapa*/
-	if ((x/TILE_SIZE - START_PLAYERX) >= 0 && (x/TILE_SIZE + FINISH_PLAYERX < SCENE_WIDTH))
+	if ((x / TILE_SIZE - START_PLAYERX) >= 0 && (x / TILE_SIZE + FINISH_PLAYERX < SCENE_WIDTH))
 	{
 		glTranslatef(-x + START_PLAYERX*TILE_SIZE, 0.0f, 0.0f);
 	}
@@ -157,8 +158,8 @@ void cGame::Render()
 	}
 	Scene.Draw(Data.GetID(IMG_BLOCKS));
 
-	if (dead) Player.Draw(Data.GetID(IMG_PLAYER_DEAD));
-	else Player.Draw(Data.GetID(IMG_PLAYER));
+	if (dead) Player.Draw(Data.GetID(IMG_PLAYER_DEAD),1);	//segon parametre = 1, animacio mort
+	else Player.Draw(Data.GetID(IMG_PLAYER), 0);	//segon parametre = 0, animacio moviment
 	Enemy.Draw(Data.GetID(IMG_ENEMY), Data.GetID(IMG_BALA_BOLA));
 	Enemy2.Draw(Data.GetID(IMG_ENEMY), Data.GetID(IMG_BALA_BOLA));
 

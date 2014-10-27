@@ -8,8 +8,27 @@
 cGame Game;
 menu Menu;
 float time0;
-bool menu;
+int menuChange;
 
+
+void inicialitza_joc()
+{
+	//Game initializations
+	Game.Init();
+	time0 = glutGet(GLUT_ELAPSED_TIME);
+
+	//Application loop
+	glutMainLoop();
+}
+
+void inicialitza_menu()
+{
+	bool carrega = false;
+	carrega = Menu.init();
+	time0 = glutGet(GLUT_ELAPSED_TIME);
+
+	glutMainLoop();
+}
 void AppRender()
 {
 	Game.Render();
@@ -32,22 +51,34 @@ void AppSpecialKeysUp(int key, int x, int y)
 }
 void AppMouse(int button, int state, int x, int y)
 {
+	int goToMenu = Menu.ReadMouse(button,state,x,y);
+	if (goToMenu != menuChange)
+	{
+		menuChange = goToMenu;
+		if (goToMenu == 0)
+		{
+			inicialitza_menu();
+		}
+		else if (goToMenu == 1)
+		{
+			inicialitza_joc();
+		}
+	}
 	Game.ReadMouse(button,state,x,y);
 }
 void AppIdle()
 {
-	if (menu && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+	if (menuChange == 0 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
 		time0 = glutGet(GLUT_ELAPSED_TIME);
 		if (!Menu.Loop()) exit(0);
 	}
-	else if (!menu && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+	else if (menuChange == 1 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
 		time0 = glutGet(GLUT_ELAPSED_TIME);
 		if (!Game.Loop()) exit(0);
 	}
-
 }
 
-void load_menu(int argc, char** argv)
+void load_MainWindow(int argc, char** argv)
 {
 	int res_x, res_y, pos_x, pos_y;
 
@@ -82,26 +113,12 @@ void load_menu(int argc, char** argv)
 	glutMouseFunc(AppMouse);
 	glutIdleFunc(AppIdle);
 
-	bool carrega = false;
-	carrega = Menu.init();
-	time0 = glutGet(GLUT_ELAPSED_TIME);
-	menu = true;
-	
-	glutMainLoop();
-}
-
-void inicialitza_joc()
-{
-	//Game initializations
-	Game.Init();
-	time0 = glutGet(GLUT_ELAPSED_TIME);
-
-	//Application loop
-	glutMainLoop();
+	Menu.bloquejaNivell2();
 }
 
 void main(int argc, char** argv)
 {
-	load_menu(argc, argv);
-	//inicialitza_joc();
+	menuChange = 0;
+	load_MainWindow(argc, argv);
+	inicialitza_menu();
 }

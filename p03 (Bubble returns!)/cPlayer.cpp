@@ -2,29 +2,45 @@
 
 cPlayer::cPlayer() {}
 cPlayer::~cPlayer(){}
+char sentit = 'L';
 
-void cPlayer::Draw(int tex_id)
+void cPlayer::Draw(int tex_id, int act)
 {	
-	float xo,yo,xf,yf;
-	char sentit = 'L';
+	float xo = 0.0f, yo = 0.0f, xf = 0.052632f, yf = 1.0f;
 	
-	if (tex_id == 6)
+	if (act == 1)	//act = 1 -> animacio mort
 	{
-		switch (GetState())
-		{
-		//19 sprites 1/19= 0.05263157894736842105263157894737
-		case STATE_LOOKLEFT:	xo = 0.052632f + (GetFrame()*0.052632);	yo = 0.0f;
-			sentit = 'L';
-			NextFrame(19);
-			break;
-
-		case STATE_LOOKRIGHT:	xo = 0.052632 + (GetFrame()*0.052632);	yo = 0.0f;
-			sentit = 'R';
-			NextFrame(19);
-			break;
+		if (GetFrame() == 18) {
+			xo = 0.947368f;
+			xf = 1.0f;
+			yo = 0.0f;
+			yf = 1.0f;
 		}
+		else {
+			switch (GetState())
+			{
+				//19 sprites 1/19= 0.05263157894736842105263157894737
+			case STATE_LOOKLEFT:
+				xo = 0.052632f + (GetFrame()*0.052632f);
+				yo = 0.0f;
+				sentit = 'L';
+				NextFrame(19);
+				break;
+
+			case STATE_LOOKRIGHT:
+				xo = 0.052632f + (GetFrame()*0.052632f);
+				yo = 0.0f;
+				sentit = 'R';
+				NextFrame(19);
+				break;
+
+			}
+			xf = xo + 0.052632f;
+			yf = 1.0f;
+		}
+		
 	}
-	else
+	else //act = 0 -> animacio moviment
 	{
 		switch (GetState())
 		{
@@ -51,7 +67,6 @@ void cPlayer::Draw(int tex_id)
 		yf = 1.0f;
 		//yf = yo - 0.25f;
 	}
-
-	if (sentit == 'L') DrawRect(tex_id,xo,yo,xf,yf,sentit);
-	else DrawRect(tex_id, xo, yo, xf, yf,sentit);
+	if (sentit == 'L') DrawRect(tex_id, xo, yo, xf, yf, sentit);
+	else DrawRect(tex_id, xo, yo, xf, yf, sentit);
 }

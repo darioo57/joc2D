@@ -11,5 +11,5 @@ public:
 	cPlayer();
 	~cPlayer();
 
-	void Draw(int tex_id);
+	void Draw(int tex_id, int act);
 };

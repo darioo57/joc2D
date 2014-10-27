@@ -126,8 +126,6 @@ void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf, char senti
 	
 	glBindTexture(GL_TEXTURE_2D,tex_id);
 	glBegin(GL_QUADS);	
-		//eix X = 1/9
-		//xo = yo = 0.0f; xf = 0.111f; yf = 1.0f;
 		if (sentit == 'L') {
 			glTexCoord2f(xo, yf);		glVertex2i(screen_x + w, screen_y); 
 			glTexCoord2f(xf, yf);		glVertex2i(screen_x, screen_y);

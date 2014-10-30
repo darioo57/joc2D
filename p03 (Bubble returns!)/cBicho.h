@@ -41,7 +41,10 @@ public:
 	bool CollidesMapWall(int *map,bool right);
 	bool CollidesMapFloor(int *map);
 	void GetArea(cRect *rc);
+	vector<int> GetBulletPosX();
+	void GetBulletPosY(vector<int> *auxVY);
 	void DrawRect(int tex_id,float xo,float yo,float xf,float yf, char sentit);
+	void DrawRectBullet(char sentit, int tex_id_bala, int numb);
 
 	void MoveRight(int *map);
 	void MoveLeft(int *map);
@@ -49,7 +52,7 @@ public:
 	void Jump(int *map);
 	void Stop();
 	void Logic(int *map);
-	bool LogicBullets(vector<int> vp);
+	bool LogicBullets(vector<int> vp, int ymax, int ymin);
 
 	int  GetState();
 	void SetState(int s);
@@ -58,9 +61,17 @@ public:
 	int  GetFrame();
 	
 private:
+
 	int x,y;
 	int w,h;
 	int state;
+	int bx, by;
+	vector<int> vxL;
+	vector<int> vxR;
+	vector<int> vpos; 
+	vector<int> vxLauxX;
+	vector<int> auxscreen_y;
+	vector<int> auxscreen_y2;
 
 	bool jumping;
 	int jump_alfa;

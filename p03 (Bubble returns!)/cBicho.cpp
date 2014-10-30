@@ -4,9 +4,14 @@
 
 cBicho::cBicho(void)
 {
-	seq=0;
-	delay=0;
-
+	seq = 0;
+	delay = 0;
+	vxLauxX = vector<int>(1000, 0);
+	vxL = vector<int>(1000, 0);
+	vxR = vector<int>(1000, 0);
+	vpos = vector<int>(2000, 0);
+	auxscreen_y = vector<int>(1000, 0);
+	auxscreen_y2 = vector<int>(1000, 0);
 	jumping = false;
 }
 cBicho::~cBicho(void){}
@@ -115,6 +120,16 @@ void cBicho::GetArea(cRect *rc)
 	rc->bottom = y;
 	rc->top    = y+h;
 }
+vector<int> cBicho::GetBulletPosX()
+{
+	return vpos;
+}
+
+void cBicho::GetBulletPosY(vector<int> *auxVY)
+{
+	*auxVY = auxscreen_y;
+}
+
 void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf, char sentit)
 {
 	int screen_x,screen_y;
@@ -140,6 +155,52 @@ void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf, char senti
 		}
 	glEnd();
 
+	glDisable(GL_TEXTURE_2D);
+}
+
+void cBicho::DrawRectBullet(char sentit, int tex_id_bala, int numb)
+{
+	int screen_x, screen_y;
+
+	screen_x = x + SCENE_Xo;
+	screen_y = y + SCENE_Yo + (BLOCK_SIZE - TILE_SIZE);
+
+	glEnable(GL_TEXTURE_2D);
+
+		glBindTexture(GL_TEXTURE_2D, tex_id_bala);
+		glBegin(GL_QUADS);
+
+		if (sentit == 'R') vxR[numb] += 4;
+		if (sentit == 'L') vxL[numb] += 4;
+
+		if (vxR[numb] > 0) {
+			if (vxR[numb] > 4) {
+				vpos[numb] = vxR[numb];
+				glTexCoord2f(0, 1);		glVertex2i(vxR[numb] + 10, auxscreen_y[numb] + 20);
+				glTexCoord2f(1, 1);		glVertex2i(vxR[numb], auxscreen_y[numb] + 20);
+				glTexCoord2f(1, 0);		glVertex2i(vxR[numb], auxscreen_y[numb] + 6 + 20);
+				glTexCoord2f(0, 0);		glVertex2i(vxR[numb] + 10, auxscreen_y[numb] + 6 + 20);
+			}
+			else {
+				vpos[numb] = vxR[numb] + screen_x;
+				vxR[numb] += screen_x;
+				auxscreen_y[numb] = screen_y;
+			}
+		}
+		if (vxL[numb] > 0) {
+			if (vxL[numb] > 4) {
+				vpos[numb] = vxLauxX[numb] + vxL[numb] * (-1);
+				glTexCoord2f(0, 1);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1) + 10, auxscreen_y2[numb] + 20);
+				glTexCoord2f(1, 1);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1), auxscreen_y2[numb] + 20);
+				glTexCoord2f(1, 0);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1), auxscreen_y2[numb] + 6 + 20);
+				glTexCoord2f(0, 0);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1) + 10, auxscreen_y2[numb] + 6 + 20);
+			}
+			else {
+				vxLauxX[numb] = screen_x;
+				auxscreen_y2[numb] = screen_y;
+			}
+		}
+		glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -201,6 +262,7 @@ void cBicho::MoveRight(int *map)
 		}
 	}
 }
+
 void cBicho::Stop()
 {
 	switch(state)
@@ -254,10 +316,12 @@ void cBicho::Logic(int *map)
 	}
 }
 
-bool cBicho::LogicBullets(vector<int> vp)
+bool cBicho::LogicBullets(vector<int> vp, int ymax, int ymin)
 {
 	for (int j = 0; j < vp.size(); ++j) {
-		if (x == vp[j]) return true; //tocat en eix X
+		if (x > 0 && (x-20 <= vp[j] && x+w-20 >= vp[j])) { //tocat en eix X, x a un costat mes l'amplada del personatge, restem 20 (a ull) per fer impacte amb dibuix
+			if (y > 0 && (y+h >= ymax-15 && y <= ymin-15)) return true; //tocat en eix y, y a la base mes alcada personatge
+		}
 	}
 	return false;
 }

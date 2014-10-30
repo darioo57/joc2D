@@ -40,4 +40,5 @@ private:
 	enemyS Enemy2;
 	yeti Yeti;
 	int maximumRightTranslation;
+	int yetiID;
 };

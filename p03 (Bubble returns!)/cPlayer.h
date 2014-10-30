@@ -11,5 +11,5 @@ public:
 	cPlayer();
 	~cPlayer();
 
-	void Draw(int tex_id, int act);
+	void Draw(int tex_id, int tex_id_bala, int act, bool shoot);
 };

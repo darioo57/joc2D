@@ -18,6 +18,25 @@ void cScene::setPosition(int x, int y)
 	actualY = y;
 }
 
+void cScene::drawBackground(int tex_id)
+{
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, tex_id);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	float repatTimes = 1;
+	float x = -1.0f;
+	float y = -1.0f;
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 0.0f); glVertex3f(0.0f, 0.0f, 0.0f);
+	glTexCoord2f(0.0f, x); glVertex3f(0.0f, GAME_HEIGHT + 16, 0.0f);
+	glTexCoord2f(y*repatTimes, x); glVertex3f(SCENE_WIDTH*TILE_SIZE + 16 * 2, GAME_HEIGHT + 16, 0.0f);
+	glTexCoord2f(y*repatTimes, 0.0f); glVertex3f(SCENE_WIDTH*TILE_SIZE + 16 * 2, 0.0f, 0.0f);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+}
+
 bool cScene::LoadLevel(int level)
 {
 	bool res;
@@ -84,8 +103,9 @@ bool cScene::LoadLevel(int level)
 	return res;
 }
 
-void cScene::Draw(int tex_id)
+void cScene::Draw(int tex_id, int neng_id)
 {
+	drawBackground(neng_id);
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,tex_id);
 	glCallList(id_DL);

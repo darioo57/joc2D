@@ -4,6 +4,8 @@
 
 rebelShotgun::rebelShotgun(void)
 {
+	auxYsizeO = 0;
+	auxYsizeF = 0;
 	seq = 0;
 	delay = 0;
 	vx = vector<int>(100, 0);
@@ -118,9 +120,15 @@ void rebelShotgun::GetArea(cRectRebel *rc)
 }
 
 
-vector<int> rebelShotgun::GetBulletPos()
+vector<int> rebelShotgun::GetBulletPosX()
 {
 	return vpos;
+}
+
+void rebelShotgun::GetBulletPosY(int *by_a, int *by_b)
+{
+	*by_a = auxYsizeO;
+	*by_b = auxYsizeF;
 }
 
 void rebelShotgun::SetBulletSize(int bposx, int bposy)
@@ -129,10 +137,14 @@ void rebelShotgun::SetBulletSize(int bposx, int bposy)
 	by = bposy;
 }
 
-void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit)
+void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit, bool dead)
 {
 	int screen_x, screen_y;
-
+	int waux = w, haux = h;
+	if (dead) {
+		waux = 36;
+		haux = 36;
+	}
 	screen_x = x + SCENE_Xo;
 	screen_y = y + SCENE_Yo + (BLOCK_SIZE - TILE_SIZE);
 
@@ -143,16 +155,16 @@ void rebelShotgun::DrawRect(int tex_id, float xo, float yo, float xf, float yf, 
 	//eix X = 1/9
 	//xo = yo = 0.0f; xf = 0.111f; yf = 1.0f;
 	if (sentit == 'R') {
-		glTexCoord2f(xo, yf);		glVertex2i(screen_x + w, screen_y);
+		glTexCoord2f(xo, yf);		glVertex2i(screen_x + waux, screen_y);
 		glTexCoord2f(xf, yf);		glVertex2i(screen_x, screen_y);
-		glTexCoord2f(xf, yo);		glVertex2i(screen_x, screen_y + h);
-		glTexCoord2f(xo, yo);		glVertex2i(screen_x + w, screen_y + h);
+		glTexCoord2f(xf, yo);		glVertex2i(screen_x, screen_y + haux);
+		glTexCoord2f(xo, yo);		glVertex2i(screen_x + waux, screen_y + haux);
 	}
-	else {	//'L'
+	else if (sentit == 'L') {	//'L'
 		glTexCoord2f(xo, yf);		glVertex2i(screen_x, screen_y);
-		glTexCoord2f(xf, yf);		glVertex2i(screen_x + w, screen_y);
-		glTexCoord2f(xf, yo);		glVertex2i(screen_x + w, screen_y + h);
-		glTexCoord2f(xo, yo);		glVertex2i(screen_x, screen_y + h);
+		glTexCoord2f(xf, yf);		glVertex2i(screen_x + waux, screen_y);
+		glTexCoord2f(xf, yo);		glVertex2i(screen_x + waux, screen_y + haux);
+		glTexCoord2f(xo, yo);		glVertex2i(screen_x, screen_y + haux);
 	}
 	glEnd();
 
@@ -166,6 +178,8 @@ void rebelShotgun::DrawRectBullet(char sentit, int tex_id_bala, int numb)
 	screen_x = x + SCENE_Xo;
 	screen_y = y + SCENE_Yo + (BLOCK_SIZE - TILE_SIZE);
 	vx[numb] += 1;
+	auxYsizeO = screen_y + by + 23;
+	auxYsizeF = screen_y + 23;
 
 	glEnable(GL_TEXTURE_2D);
 	
@@ -330,6 +344,17 @@ void rebelShotgun::Logic(int *map)
 			y -= (2 * STEP_LENGTH);
 	}
 }
+
+bool rebelShotgun::LogicBullets(vector<int> vp, vector<int> auxVY)
+{
+	for (int j = 0; j < vp.size(); ++j) {
+		if (x > 0 && (x - 20 <= vp[j] && x + w - 20 >= vp[j])) {
+			if (y > 0 && (y + h >= auxVY[j] + 6 && y <= auxVY[j])) return true;
+		}
+	}
+	return false;
+}
+
 void rebelShotgun::NextFrame(int max)
 {
 	delay++;

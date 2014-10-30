@@ -31,7 +31,7 @@ void inicialitza_menu()
 }
 void AppRender()
 {
-	Game.Render();
+	//Game.Render();
 }
 void AppKeyboard(unsigned char key, int x, int y)
 {
@@ -68,11 +68,11 @@ void AppMouse(int button, int state, int x, int y)
 }
 void AppIdle()
 {
-	if (menuChange == 0 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+	if (menuChange == 1 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
 		time0 = glutGet(GLUT_ELAPSED_TIME);
 		if (!Menu.Loop()) exit(0);
 	}
-	else if (menuChange == 1 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+	else if (menuChange == 0 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
 		time0 = glutGet(GLUT_ELAPSED_TIME);
 		if (!Game.Loop()) exit(0);
 	}
@@ -120,5 +120,5 @@ void main(int argc, char** argv)
 {
 	menuChange = 0;
 	load_MainWindow(argc, argv);
-	inicialitza_menu();
+	inicialitza_joc();
 }

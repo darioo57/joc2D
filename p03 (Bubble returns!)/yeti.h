@@ -2,19 +2,22 @@
 
 #include "cTexture.h"
 #include "Globals.h"
+#include "cData.h"
 #include <vector>
 #include <iostream>
 using namespace std;
 
 #define FRAME_DELAY		8
-#define STEP_LENGTH		2
-#define JUMP_HEIGHT		96
+#define STEP_LENGTH		1
+#define JUMP_HEIGHT		9*16
 #define JUMP_STEP		4
 
 #define STATE_LOOKLEFT		0
 #define STATE_LOOKRIGHT		1
 #define STATE_WALKLEFT		2
 #define STATE_WALKRIGHT		3
+#define STATE_ATTACK		4
+#define STATE_DEAD			5
 #define START_YETIX 80
 #define START_YETIY 10
 
@@ -32,7 +35,7 @@ public:
 	yeti(int x, int y, int w, int h);
 	~yeti();
 
-	void Draw(int tex_id);
+	void Draw(cData Data, int pos_vector);
 	void SetPosition(int x, int y);
 	void GetPosition(int *x, int *y);
 	void SetTile(int tx, int ty);
@@ -48,9 +51,14 @@ public:
 
 	void MoveRight(int *map);
 	void MoveLeft(int *map);
+	void attackRight(int *map);
+	void attackLeft(int *map);
+	void JumpRight(int *map);
+	void JumpLeft(int *map);
 	void Jump(int *map);
 	void Stop();
 	void Logic(int *map);
+	int decision(int *map, int x, int y);
 	bool LogicBullets(vector<int> vp);
 
 	int  GetState();
@@ -69,5 +77,5 @@ private:
 	int jump_y;
 
 	int seq, delay;
+	int life;
 };
-

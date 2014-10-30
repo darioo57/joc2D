@@ -20,33 +20,59 @@ yeti::~yeti()
 {
 }
 
-void yeti::Draw(int tex_id)
+void yeti::Draw(cData Data, int pos_vector)
 {
 	float xo, yo, xf, yf;
 	char sentit = 'L';
 	/*9 Sprites pertant 1/9*/
+	float suma = 1.0f;
+	int tex_id = Data.GetID(pos_vector);
+	if (tex_id == 5)//walk
+	{
+		suma /= 14.0f;
+	}
+	else if (tex_id == 6)//dead
+	{
+		suma /= 10.0f;
+	}
+	else if (tex_id == 7)//attack1
+	{
+		suma /= 12.0f;
+	}
+	else if (tex_id == 8)//attack2
+	{
+		suma /= 4.0f;
+	}
 	switch (GetState())
 	{
 
-	case STATE_LOOKLEFT:	xo = 0.0f;	yo = 0.0f; //yo = 0.25f;
+	case STATE_LOOKLEFT:	xo = 0.0f;	yo = 0.0f;
 							sentit = 'L';
 							break;
 
-	case STATE_LOOKRIGHT:	xo = 0.0f;	yo = 0.0f; //yo = 0.25f;
+	case STATE_LOOKRIGHT:	xo = 0.0f;	yo = 0.0f;
 							sentit = 'R';
 							break;
 
-	case STATE_WALKLEFT:	xo = 0.111f + (GetFrame()*0.111f);	yo = 0.0f;	//yo = 0.25f + (GetFrame()*0.25f);
+	case STATE_WALKLEFT:	xo = suma + (GetFrame()*suma);	yo = 0.0f;
 							sentit = 'L';
-							NextFrame(9);
+							NextFrame(14);
 							break;
 
-	case STATE_WALKRIGHT:	xo = 0.111f + (GetFrame()*0.111f);	yo = 0.0f; //yo = 0.25f + (GetFrame()*0.25f);
+	case STATE_WALKRIGHT:	xo = suma + (GetFrame()*suma);	yo = 0.0f;
 							sentit = 'R';
-							NextFrame(9);
+							NextFrame(14);
+							break;
+	case STATE_ATTACK:		xo = suma + (GetFrame()*suma);	yo = 0.0f;
+							sentit = 'R';
+							NextFrame(12);
+							break;
+	case STATE_DEAD:		xo = suma + (GetFrame()*suma);	yo = 0.0f;
+							sentit = 'R';
+							NextFrame(10);
 							break;
 	}
-	xf = xo + 0.111f;
+	xf = xo + suma;
 	yf = 1.0f;
 
 	if (sentit == 'L') DrawRect(tex_id, xo, yo, xf, yf, sentit);
@@ -57,6 +83,7 @@ void yeti::SetPosition(int posx, int posy)
 {
 	x = posx;
 	y = posy;
+	life = 100;
 }
 void yeti::GetPosition(int *posx, int *posy)
 {
@@ -161,8 +188,6 @@ void yeti::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sen
 
 	glBindTexture(GL_TEXTURE_2D, tex_id);
 	glBegin(GL_QUADS);
-	//eix X = 1/9
-	//xo = yo = 0.0f; xf = 0.111f; yf = 1.0f;
 	if (sentit == 'L') {
 		glTexCoord2f(xo, yf);		glVertex2i(screen_x + w, screen_y);
 		glTexCoord2f(xf, yf);		glVertex2i(screen_x, screen_y);
@@ -208,7 +233,6 @@ void yeti::MoveRight(int *map)
 			delay = 0;
 		}
 	}
-
 }
 void yeti::MoveLeft(int *map)
 {
@@ -235,6 +259,82 @@ void yeti::MoveLeft(int *map)
 			state = STATE_WALKLEFT;
 			seq = 0;
 			delay = 0;
+		}
+	}
+}
+
+void yeti::attackRight(int *map)
+{
+	int xaux;
+
+	//Whats next tile?
+	if ((x % TILE_SIZE) == 0)
+	{
+		if (CollidesMapWall(map, true))
+		{
+			state = STATE_LOOKRIGHT;
+		}
+	}
+	//Advance, no problem
+	else
+	{
+		if (state != STATE_WALKRIGHT)
+		{
+			state = STATE_ATTACK;
+			seq = 0;
+			delay = 0;
+		}
+	}
+}
+
+void yeti::attackLeft(int *map)
+{
+	int xaux;
+
+	//Whats next tile?
+	if ((x % TILE_SIZE) == 0)
+	{
+		if (CollidesMapWall(map, true))
+		{
+			state = STATE_LOOKLEFT;
+		}
+	}
+	//Advance, no problem
+	else
+	{
+		if (state != STATE_WALKLEFT)
+		{
+			state = STATE_ATTACK;
+			seq = 0;
+			delay = 0;
+		}
+	}
+}
+
+void yeti::JumpRight(int *map)
+{
+	if (!jumping)
+	{
+		if (CollidesMapFloor(map))
+		{
+			jumping = true;
+			jump_alfa = 0;
+			jump_y = y;
+			x += STEP_LENGTH;
+		}
+	}
+}
+
+void yeti::JumpLeft(int *map)
+{
+	if (!jumping)
+	{
+		if (CollidesMapFloor(map))
+		{
+			jumping = true;
+			jump_alfa = 0;
+			jump_y = y;
+			x -= STEP_LENGTH;
 		}
 	}
 }
@@ -292,6 +392,47 @@ void yeti::Logic(int *map)
 			y -= (2 * STEP_LENGTH);
 	}
 }
+
+int yeti::decision(int *map, int x, int y)
+{
+	if (!CollidesMapWall(map, true))
+	{
+		if (x < this->x && x + 15*16 > this->x)
+		{
+			MoveLeft(map);
+			return 14;
+		}
+		else if (x > this->x && x - 15*16 < this->x)
+		{
+			MoveRight(map);
+			return 14;
+		}
+		if (x < this->x && x + 2*16 > this->x)
+		{
+			attackLeft(map);
+			return 17;
+		}
+		else if (x > this->x && x - 2*16 < this->x)
+		{
+			attackRight(map);
+			return 17;
+		}
+	}
+	else
+	{
+		if (CollidesMapWall(map, false))
+		{
+			JumpLeft(map);
+			return 14;
+		}
+		else
+		{
+			JumpRight(map);
+			return 14;
+		}
+	}
+	return 14;
+}
 bool yeti::LogicBullets(vector<int> vp)
 {
 	for (int j = 0; j < vp.size(); ++j) {
@@ -314,7 +455,7 @@ void yeti::NextFrame(int max)
 	delay++;
 	if (delay == FRAME_DELAY)
 	{
-		seq++;
+		seq--;
 		seq %= max;
 		delay = 0;
 	}

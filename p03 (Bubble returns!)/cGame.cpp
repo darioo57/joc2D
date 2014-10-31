@@ -150,16 +150,17 @@ bool cGame::Process()
 		Enemy.GetBulletPosY(&by_a, &by_b);
 		Enemy2.GetBulletPosY(&by2_a, &by2_b);
 		Player.GetBulletPosY(&auxVY);
-		if (!l3) {
-			bool l1 = Player.LogicBullets(Enemy.GetBulletPosX(), by_a, by_b);
-			if (l1) dead = true;
-		}
-		if (!l4) {
-			bool l2 = Player.LogicBullets(Enemy2.GetBulletPosX(), by2_a, by2_b);
-			if (l2) dead = true;
-		}
-		if (!l3) l3 = Enemy.LogicBullets(Player.GetBulletPosX(), auxVY);
-		if (!l4) l4 = Enemy2.LogicBullets(Player.GetBulletPosX(), auxVY);
+		Yeti.Logic(Scene.GetMap());
+		//if (!l3) {
+		//	bool l1 = Player.LogicBullets(Enemy.GetBulletPosX(), by_a, by_b);
+		//	if (l1) dead = true;
+		//}
+		//if (!l4) {
+		//	bool l2 = Player.LogicBullets(Enemy2.GetBulletPosX(), by2_a, by2_b);
+		//	if (l2) dead = true;
+		//}
+		//if (!l3) l3 = Enemy.LogicBullets(Player.GetBulletPosX(), auxVY);
+		//if (!l4) l4 = Enemy2.LogicBullets(Player.GetBulletPosX(), auxVY);
 
 	}
 	else

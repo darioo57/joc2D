@@ -8,7 +8,7 @@
 #include "yeti.h"
 
 #define GAME_WIDTH	80*16
-#define GAME_HEIGHT 40*16
+#define GAME_HEIGHT 30*16
 #define START_PLAYERX 4
 #define START_PLAYERY 10
 #define FINISH_PLAYERX (GAME_WIDTH/16)-6

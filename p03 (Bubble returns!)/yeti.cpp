@@ -1,3 +1,4 @@
+#include <string>
 #include "yeti.h"
 #include "Globals.h"
 #include "cScene.h"
@@ -395,27 +396,32 @@ void yeti::Logic(int *map)
 
 int yeti::decision(int *map, int x, int y)
 {
+	
 	if (!CollidesMapWall(map, true))
 	{
-		if (x < this->x && x + 15*16 > this->x)
+		if (x < this->x && x + 5 * 16 > this->x)
+		{
+			attackLeft(map);
+			OutputDebugString("EsquerraAtaca");
+			return 17;
+		}
+		else if (x > this->x && x - 5 * 16 < this->x)
+		{
+			attackRight(map);
+			OutputDebugString("DretaAtaca");
+			return 17;
+		}
+		else if (x < this->x && x + 15*16 > this->x)
 		{
 			MoveLeft(map);
+			OutputDebugString("Esquerra");
 			return 14;
 		}
 		else if (x > this->x && x - 15*16 < this->x)
 		{
 			MoveRight(map);
+			OutputDebugString("Dreta");
 			return 14;
-		}
-		if (x < this->x && x + 2*16 > this->x)
-		{
-			attackLeft(map);
-			return 17;
-		}
-		else if (x > this->x && x - 2*16 < this->x)
-		{
-			attackRight(map);
-			return 17;
 		}
 	}
 	else
@@ -423,14 +429,17 @@ int yeti::decision(int *map, int x, int y)
 		if (CollidesMapWall(map, false))
 		{
 			JumpLeft(map);
+			OutputDebugString("EsquerraSalta");
 			return 14;
 		}
 		else
 		{
 			JumpRight(map);
+			OutputDebugString("DretaSalta");
 			return 14;
 		}
 	}
+	OutputDebugString("RAP");
 	return 14;
 }
 bool yeti::LogicBullets(vector<int> vp)

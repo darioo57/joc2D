@@ -345,11 +345,20 @@ void rebelShotgun::Logic(int *map)
 	}
 }
 
-bool rebelShotgun::LogicBullets(vector<int> vp, vector<int> auxVY)
+bool rebelShotgun::LogicBullets(vector<int> auxX1, vector<int> auxX2, vector<int> auxVY1, vector<int> auxVY2)
 {
-	for (int j = 0; j < vp.size(); ++j) {
-		if (x > 0 && (x - 20 <= vp[j] && x + w - 20 >= vp[j])) {
-			if (y > 0 && (y + h >= auxVY[j] + 6 && y <= auxVY[j])) return true;
+	for (int j = 0; j < auxX1.size(); ++j) {
+		if (x > 0 && (x - 20 <= auxX1[j] && x + w - 20 >= auxX1[j])) {
+			if (y > 0 && (y + h >= auxVY1[j] && y <= auxVY1[j])) {
+				return true;
+			}
+		}
+	}
+	for (int j = 0; j < auxX2.size(); ++j) {
+		if (x > 0 && (x - 20 <= auxX2[j] && x + w - 20 >= auxX2[j])) {
+			if (y > 0 && (y + h >= auxVY2[j] && y <= auxVY2[j])) {
+				return true;
+			}
 		}
 	}
 	return false;

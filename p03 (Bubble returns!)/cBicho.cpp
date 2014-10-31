@@ -9,7 +9,8 @@ cBicho::cBicho(void)
 	vxLauxX = vector<int>(1000, 0);
 	vxL = vector<int>(1000, 0);
 	vxR = vector<int>(1000, 0);
-	vpos = vector<int>(2000, 0);
+	vpos1 = vector<int>(1000, 0);
+	vpos2 = vector<int>(1000, 0);
 	auxscreen_y = vector<int>(1000, 0);
 	auxscreen_y2 = vector<int>(1000, 0);
 	jumping = false;
@@ -120,20 +121,26 @@ void cBicho::GetArea(cRect *rc)
 	rc->bottom = y;
 	rc->top    = y+h;
 }
-vector<int> cBicho::GetBulletPosX()
+void cBicho::GetBulletPosX(vector<int> *auxX1, vector<int> *auxX2)
 {
-	return vpos;
+	*auxX1 = vpos1;
+	*auxX2 = vpos2;
 }
 
-void cBicho::GetBulletPosY(vector<int> *auxVY)
+void cBicho::GetBulletPosY(vector<int> *auxVY1, vector<int> *auxVY2)
 {
-	*auxVY = auxscreen_y;
+	*auxVY1 = auxscreen_y;
+	*auxVY2 = auxscreen_y2;
 }
 
-void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf, char sentit)
+void cBicho::DrawRect(int tex_id, float xo, float yo, float xf, float yf, char sentit, bool dispara)
 {
 	int screen_x,screen_y;
-
+	int waux = w, haux = h;
+	if (dispara) {
+		waux = 40;
+		haux = 36;
+	}
 	screen_x = x + SCENE_Xo;
 	screen_y = y + SCENE_Yo + (BLOCK_SIZE - TILE_SIZE);
 
@@ -142,16 +149,16 @@ void cBicho::DrawRect(int tex_id,float xo,float yo,float xf,float yf, char senti
 	glBindTexture(GL_TEXTURE_2D,tex_id);
 	glBegin(GL_QUADS);	
 		if (sentit == 'L') {
-			glTexCoord2f(xo, yf);		glVertex2i(screen_x + w, screen_y); 
+			glTexCoord2f(xo, yf);		glVertex2i(screen_x + waux, screen_y);
 			glTexCoord2f(xf, yf);		glVertex2i(screen_x, screen_y);
-			glTexCoord2f(xf, yo);		glVertex2i(screen_x, screen_y + h);
-			glTexCoord2f(xo, yo);		glVertex2i(screen_x + w, screen_y + h);
+			glTexCoord2f(xf, yo);		glVertex2i(screen_x, screen_y + haux);
+			glTexCoord2f(xo, yo);		glVertex2i(screen_x + waux, screen_y + haux);
 		}
 		else {	//'R'
 			glTexCoord2f(xo, yf);		glVertex2i(screen_x, screen_y);
-			glTexCoord2f(xf, yf);		glVertex2i(screen_x + w, screen_y);
-			glTexCoord2f(xf, yo);		glVertex2i(screen_x + w, screen_y + h);
-			glTexCoord2f(xo, yo);		glVertex2i(screen_x, screen_y + h);
+			glTexCoord2f(xf, yf);		glVertex2i(screen_x + waux, screen_y);
+			glTexCoord2f(xf, yo);		glVertex2i(screen_x + waux, screen_y + haux);
+			glTexCoord2f(xo, yo);		glVertex2i(screen_x, screen_y + haux);
 		}
 	glEnd();
 
@@ -175,29 +182,30 @@ void cBicho::DrawRectBullet(char sentit, int tex_id_bala, int numb)
 
 		if (vxR[numb] > 0) {
 			if (vxR[numb] > 4) {
-				vpos[numb] = vxR[numb];
-				glTexCoord2f(0, 1);		glVertex2i(vxR[numb] + 10, auxscreen_y[numb] + 20);
-				glTexCoord2f(1, 1);		glVertex2i(vxR[numb], auxscreen_y[numb] + 20);
-				glTexCoord2f(1, 0);		glVertex2i(vxR[numb], auxscreen_y[numb] + 6 + 20);
-				glTexCoord2f(0, 0);		glVertex2i(vxR[numb] + 10, auxscreen_y[numb] + 6 + 20);
+				vpos1[numb] = vxR[numb];
+				glTexCoord2f(0, 1);		glVertex2i(vxR[numb] + 10, auxscreen_y[numb]);
+				glTexCoord2f(1, 1);		glVertex2i(vxR[numb], auxscreen_y[numb]);
+				glTexCoord2f(1, 0);		glVertex2i(vxR[numb], auxscreen_y[numb] + 6);
+				glTexCoord2f(0, 0);		glVertex2i(vxR[numb] + 10, auxscreen_y[numb] + 6);
 			}
 			else {
-				vpos[numb] = vxR[numb] + screen_x;
+				vpos1[numb] = vxR[numb] + screen_x;
 				vxR[numb] += screen_x;
-				auxscreen_y[numb] = screen_y;
+				auxscreen_y[numb] = screen_y + 20;
 			}
 		}
 		if (vxL[numb] > 0) {
 			if (vxL[numb] > 4) {
-				vpos[numb] = vxLauxX[numb] + vxL[numb] * (-1);
-				glTexCoord2f(0, 1);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1) + 10, auxscreen_y2[numb] + 20);
-				glTexCoord2f(1, 1);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1), auxscreen_y2[numb] + 20);
-				glTexCoord2f(1, 0);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1), auxscreen_y2[numb] + 6 + 20);
-				glTexCoord2f(0, 0);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1) + 10, auxscreen_y2[numb] + 6 + 20);
+				vpos2[numb] = vxLauxX[numb] + vxL[numb] * (-1);
+				glTexCoord2f(0, 1);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1) + 10, auxscreen_y2[numb]);
+				glTexCoord2f(1, 1);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1), auxscreen_y2[numb]);
+				glTexCoord2f(1, 0);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1), auxscreen_y2[numb] + 6);
+				glTexCoord2f(0, 0);		glVertex2i(vxLauxX[numb] + vxL[numb] * (-1) + 10, auxscreen_y2[numb] + 6);
 			}
 			else {
 				vxLauxX[numb] = screen_x;
-				auxscreen_y2[numb] = screen_y;
+				vpos2[numb] = vxLauxX[numb] + vxL[numb] * (-1);
+				auxscreen_y2[numb] = screen_y + 20;
 			}
 		}
 		glEnd();
@@ -343,6 +351,11 @@ int cBicho::GetFrame()
 int cBicho::GetState()
 {
 	return state;
+}
+void cBicho::ResetFrame()
+{
+	seq = 0;
+	delay = 0;
 }
 void cBicho::SetState(int s)
 {

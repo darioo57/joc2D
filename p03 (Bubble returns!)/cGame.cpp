@@ -3,6 +3,7 @@
 
 bool dead = false;
 bool shoot = false;
+bool iniShoot = true;
 bool l3 = false, l4 = false;
 
 cGame::cGame(void)
@@ -115,7 +116,7 @@ void cGame::ReadMouse(int button, int state, int x, int y)
 bool cGame::Process()
 {
 	bool res=true;
-	shoot = false;
+	//shoot = false;
 	//Process Input
 	int x, y;
 	Player.GetPosition(&x, &y);
@@ -126,7 +127,15 @@ bool cGame::Process()
 
 		if (!dead)
 		{
-			if (keys[108]) shoot = true; //lletra 'l'
+			if (keys[108]) {
+				shoot = true; //lletra 'l'
+			}
+			else {
+				if (shoot == true) iniShoot = true;
+				else iniShoot = false;
+				shoot = false;
+				//iniShoot = true;////////////////////////////////////////
+			}
 			if (!shoot) {
 				if (keys[GLUT_KEY_UP])			Player.Jump(Scene.GetMap());
 				if (keys[GLUT_KEY_LEFT])			Player.MoveLeft(Scene.GetMap());
@@ -146,21 +155,27 @@ bool cGame::Process()
 		Player.Logic(Scene.GetMap());
 
 		int by_a, by_b, by2_a, by2_b;
-		vector<int> auxVY;
+		vector<int> auxX1, auxX2, auxVY1, auxVY2;
 		Enemy.GetBulletPosY(&by_a, &by_b);
 		Enemy2.GetBulletPosY(&by2_a, &by2_b);
-		Player.GetBulletPosY(&auxVY);
+		Player.GetBulletPosY(&auxVY1, &auxVY2);
 		Yeti.Logic(Scene.GetMap());
-		//if (!l3) {
-		//	bool l1 = Player.LogicBullets(Enemy.GetBulletPosX(), by_a, by_b);
-		//	if (l1) dead = true;
-		//}
-		//if (!l4) {
-		//	bool l2 = Player.LogicBullets(Enemy2.GetBulletPosX(), by2_a, by2_b);
-		//	if (l2) dead = true;
-		//}
-		//if (!l3) l3 = Enemy.LogicBullets(Player.GetBulletPosX(), auxVY);
-		//if (!l4) l4 = Enemy2.LogicBullets(Player.GetBulletPosX(), auxVY);
+		if (!l3) {
+			bool l1 = Player.LogicBullets(Enemy.GetBulletPosX(), by_a, by_b);
+			if (l1) dead = true;
+		}
+		if (!l4) {
+			bool l2 = Player.LogicBullets(Enemy2.GetBulletPosX(), by2_a, by2_b);
+			if (l2) dead = true;
+		}
+		if (!l3) {
+			Player.GetBulletPosX(&auxX1, &auxX2);
+			l3 = Enemy.LogicBullets(auxX1, auxX2, auxVY1, auxVY2);
+		}
+		if (!l4) {
+			Player.GetBulletPosX(&auxX1, &auxX2);
+			l4 = Enemy2.LogicBullets(auxX1, auxX2, auxVY1, auxVY2);
+		}
 
 	}
 	else
@@ -202,7 +217,8 @@ void cGame::Render()
 
 	if (dead) Player.Draw(Data.GetID(IMG_PLAYER_DEAD), Data.GetID(IMG_BALA_PISTOLA), 1, shoot);	//segon parametre = 1, animacio mort
 	else {
-		if (shoot) Player.Draw(Data.GetID(IMG_PLAYER_SHOOT), Data.GetID(IMG_BALA_PISTOLA), 0, shoot); //shoot true, animacio dispara
+		if (iniShoot) Player.Draw(Data.GetID(IMG_PLAYER_SHOOT), Data.GetID(IMG_BALA_PISTOLA), 2, iniShoot); //shoot true, animacio dispara
+		else if (shoot) Player.Draw(Data.GetID(IMG_PLAYER_SHOOT), Data.GetID(IMG_BALA_PISTOLA), 0, shoot);
 		else Player.Draw(Data.GetID(IMG_PLAYER), Data.GetID(IMG_BALA_PISTOLA), 0, shoot);	//segon parametre = 0, animacio moviment
 	}
 	if (l3)  Enemy.Draw(Data.GetID(IMG_ENEMY_DEAD), Data.GetID(IMG_BALA_BOLA), 1);

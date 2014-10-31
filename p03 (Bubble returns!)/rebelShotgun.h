@@ -54,7 +54,7 @@ public:
 	void Jump(int *map);
 	void Stop();
 	void Logic(int *map);
-	bool LogicBullets(vector<int> vp, vector<int> auxVY);
+	bool LogicBullets(vector<int> auxX1, vector<int> auxX2, vector<int> auxVY1, vector<int> auxVY2);
 
 	int  GetState();
 	void SetState(int s);

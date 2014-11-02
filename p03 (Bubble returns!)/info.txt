@@ -1,0 +1,28 @@
+Nom i Cognoms:
+				Sergi Miquel Ribas
+				Dario Re Delgado
+Funcionalitats:
+				1) PART COMUNA
+					2 nivells que es poden superar tal i com ho fa el joc original.
+					Un parell d'enemics amb comportaments i representacions diferents.
+					El personatge haurà de poder disparar i els trets hauran de poder col·lisionar tant amb els enemics com amb l'escenari.
+				2) TRES FUNCIONALITATS DEL JOC
+					Estructura bàsica de 4 pantalles: menú principal, jugar, instruccions, crèdits.
+					Enriquir escenari amb capes superposades al davant i de fons, dos nivells un amb tiles i laltre amb imatge.
+				3) PART CREATIVA
+					Multijugador
+Instruccions del joc:
+				Un joc de plataformes en el que s'ha d'anar disparant als rivals que van sortint per la pantalla. Per a això s'utilitzaran les seguents tecles:
+				Al començar el joc ens trobarem un menu amb totes les opcions possibles.
+				Player1:
+					Esquerra = Boto cap amb fletxa cap l'esquerra.
+					Dreta = Boto cap amb fletxa cap a la dreta.
+					Saltar = Boto cap amb fletxa cap adalt.
+					Disparar = Boto amb la lletra L.
+				Player2:
+					Esquerra = Boto cap amb la lletra Z.
+					Dreta = Boto cap amb la lletra X.
+					Saltar = Boto cap amb la lletra C.
+					Disparar = Boto amb la lletra V.
+				Menu:
+					Amb la tecla Esc s'anira al menu sempre.

@@ -63,7 +63,6 @@ bool cScene::LoadLevel(int level)
 				px = (actualX*TILE_SIZE);// SCENE_Xo;
 				py = (actualY*TILE_SIZE) + (j*TILE_SIZE);// SCENE_Yo;
 				
-
 				for(i=0;i<SCENE_WIDTH;i++)
 				{
 					fscanf(fd,"%c",&tile);
@@ -76,18 +75,43 @@ bool cScene::LoadLevel(int level)
 					{
 						//Tiles = 1,2,3,...
 						map[(j*SCENE_WIDTH)+i] = tile-48;
-
-						if(map[(j*SCENE_WIDTH)+i]%2) coordx_tile = 0.0f;
-						else						 coordx_tile = 0.5f;
-						if(map[(j*SCENE_WIDTH)+i]<3) coordy_tile = 0.0f;
-						else						 coordy_tile = 0.5f;
-
+						float tileSetX = 0.0f;
+						float tileSetY = 0.0f;
+						if (level == 1)
+						{
+							if (map[(j*SCENE_WIDTH) + i] % 2) coordx_tile = 0.0f;
+							else						 coordx_tile = 0.5f;
+							if (map[(j*SCENE_WIDTH) + i] == 1) coordy_tile = 0.0f;
+							else if (map[(j*SCENE_WIDTH) + i] == 2) coordy_tile = 0.0f;
+							else if (map[(j*SCENE_WIDTH) + i] == 3) coordy_tile = 0.25f;
+							else if (map[(j*SCENE_WIDTH) + i] == 4) coordy_tile = 0.25f;
+							else if (map[(j*SCENE_WIDTH) + i] == 5) coordy_tile = 0.5f;
+							else if (map[(j*SCENE_WIDTH) + i] == 6) coordy_tile = 0.5f;
+							else						 coordy_tile = 0.75f;
+							tileSetX = 1.0f / 2.0f;
+							tileSetY = 1.0f / 4.0f;
+						}
+						else if (level == 2)
+						{
+							if (map[(j*SCENE_WIDTH) + i] % 3 == 1) coordx_tile = 0.0f;
+							else if (map[(j*SCENE_WIDTH) + i] % 3 == 2) coordx_tile = 1.0f / 3.0f;
+							else coordx_tile = 2.0f / 3.0f;
+							if (map[(j*SCENE_WIDTH) + i] == 1) coordy_tile = 0.0f;
+							else if (map[(j*SCENE_WIDTH) + i] == 2) coordy_tile = 0.0f;
+							else if (map[(j*SCENE_WIDTH) + i] == 3) coordy_tile = 0.0f;
+							else if (map[(j*SCENE_WIDTH) + i] == 4) coordy_tile = 1.0f / 3.0f;
+							else if (map[(j*SCENE_WIDTH) + i] == 5) coordy_tile = 1.0f / 3.0f;
+							else if (map[(j*SCENE_WIDTH) + i] == 6) coordy_tile = 1.0f / 3.0f;
+							else						 coordy_tile = 2.0f / 3.0f;
+							tileSetX = 1.0f / 3.0f;
+							tileSetY = 1.0f / 3.0f;
+						}
 						//BLOCK_SIZE = 16, FILE_SIZE = 32
 						// 16 / 32 = 0.5
 						/*Aixo pinta el mapa*/
-						glTexCoord2f(coordx_tile       ,coordy_tile+0.5f);	glVertex2i(px           ,py           );
-						glTexCoord2f(coordx_tile+0.5f  ,coordy_tile+0.5f);	glVertex2i(px+BLOCK_SIZE,py           );
-						glTexCoord2f(coordx_tile+0.5f  ,coordy_tile     );	glVertex2i(px+BLOCK_SIZE,py+BLOCK_SIZE);
+						glTexCoord2f(coordx_tile       ,coordy_tile+tileSetY);	glVertex2i(px           ,py           );
+						glTexCoord2f(coordx_tile+tileSetX  ,coordy_tile+tileSetY);	glVertex2i(px+BLOCK_SIZE,py           );
+						glTexCoord2f(coordx_tile+tileSetX  ,coordy_tile     );	glVertex2i(px+BLOCK_SIZE,py+BLOCK_SIZE);
 						glTexCoord2f(coordx_tile       ,coordy_tile     );	glVertex2i(px           ,py+BLOCK_SIZE);
 					}
 					px+=TILE_SIZE;

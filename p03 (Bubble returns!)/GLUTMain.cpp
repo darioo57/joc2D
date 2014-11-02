@@ -9,13 +9,18 @@ cGame Game;
 menu Menu;
 float time0;
 int menuChange;
+bool ignoreMouse = false;
 
 
-void inicialitza_joc()
+void inicialitza_joc(int x)
 {
+	if (x == 1) Game.Init(1,false);
+	else if (x == 2) Game.Init(2, false);
+	else if (x == 3) Game.Init(1, true);
+	else if (x == 4) Game.Init(2, true);
 	//Game initializations
-	Game.Init();
 	time0 = glutGet(GLUT_ELAPSED_TIME);
+	menuChange = 1;
 
 	//Application loop
 	glutMainLoop();
@@ -26,6 +31,7 @@ void inicialitza_menu()
 	bool carrega = false;
 	carrega = Menu.init();
 	time0 = glutGet(GLUT_ELAPSED_TIME);
+	menuChange = 0;
 
 	glutMainLoop();
 }
@@ -52,30 +58,33 @@ void AppSpecialKeysUp(int key, int x, int y)
 void AppMouse(int button, int state, int x, int y)
 {
 	int goToMenu = Menu.ReadMouse(button,state,x,y);
-	if (goToMenu != menuChange)
+	if (!ignoreMouse)
 	{
-		menuChange = goToMenu;
-		if (goToMenu == 0)
+		if (goToMenu == 0) inicialitza_menu();
+		else
 		{
-			inicialitza_menu();
-		}
-		else if (goToMenu == 1)
-		{
-			inicialitza_joc();
+			inicialitza_joc(goToMenu);
+			ignoreMouse = true;
+
 		}
 	}
 	Game.ReadMouse(button,state,x,y);
 }
 void AppIdle()
 {
-	if (menuChange == 1 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+	if (menuChange == 0 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
 		time0 = glutGet(GLUT_ELAPSED_TIME);
 		if (!Menu.Loop()) exit(0);
 	}
-	else if (menuChange == 0 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
+	else if (menuChange == 1 && (glutGet(GLUT_ELAPSED_TIME) - time0) > 1000 / 60) {
 		time0 = glutGet(GLUT_ELAPSED_TIME);
-		if (!Game.Loop()) exit(0);
+		if (!Game.Loop()) inicialitza_menu();
 	}
+}
+
+void resize(int width, int height) {
+	// we ignore the params and do:
+	glutReshapeWindow(GAME_WIDTH, GAME_HEIGHT);
 }
 
 void load_MainWindow(int argc, char** argv)
@@ -112,13 +121,12 @@ void load_MainWindow(int argc, char** argv)
 	glutSpecialUpFunc(AppSpecialKeysUp);
 	glutMouseFunc(AppMouse);
 	glutIdleFunc(AppIdle);
-
-	Menu.bloquejaNivell2();
+	glutReshapeFunc(resize);
 }
 
 void main(int argc, char** argv)
 {
 	menuChange = 0;
 	load_MainWindow(argc, argv);
-	inicialitza_joc();
+	inicialitza_menu();
 }

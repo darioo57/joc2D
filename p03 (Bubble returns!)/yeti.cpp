@@ -21,28 +21,29 @@ yeti::~yeti()
 {
 }
 
-void yeti::Draw(cData Data, int pos_vector)
+void yeti::Draw(int tex_id, int state)
 {
 	float xo, yo, xf, yf;
 	char sentit = 'L';
 	/*9 Sprites pertant 1/9*/
 	float suma = 1.0f;
-	int tex_id = Data.GetID(pos_vector);
-	if (tex_id == 5)//walk
+	if (state == 1)//walk
 	{
 		suma /= 14.0f;
+		this->w = 80;
+		this->h = 60;
 	}
-	else if (tex_id == 6)//dead
+	else if (state == 2)//dead
 	{
 		suma /= 10.0f;
+		this->w = 80;
+		this->h = 60;
 	}
-	else if (tex_id == 7)//attack1
+	else if (state == 3)//attack1
 	{
-		suma /= 12.0f;
-	}
-	else if (tex_id == 8)//attack2
-	{
-		suma /= 4.0f;
+		suma /= 16.0f;
+		this->w = 120;
+		this->h = 90;
 	}
 	switch (GetState())
 	{
@@ -68,9 +69,13 @@ void yeti::Draw(cData Data, int pos_vector)
 							sentit = 'R';
 							NextFrame(12);
 							break;
-	case STATE_DEAD:		xo = suma + (GetFrame()*suma);	yo = 0.0f;
-							sentit = 'R';
-							NextFrame(10);
+	case STATE_DEAD:		if (GetFrame() != -9)
+							{
+								xo = suma + (GetFrame()*suma);	yo = 0.0f;
+								sentit = 'R';
+								NextFrame(10);
+							}
+							else { sentit = 'R'; xo = 0.0f; yo = 0.0f; }
 							break;
 	}
 	xf = xo + suma;
@@ -84,7 +89,6 @@ void yeti::SetPosition(int posx, int posy)
 {
 	x = posx;
 	y = posy;
-	life = 100;
 }
 void yeti::GetPosition(int *posx, int *posy)
 {
@@ -170,6 +174,72 @@ bool yeti::CollidesMapFloor(int *map)
 		i++;
 	}
 	return on_base;
+}
+bool yeti::CollidesPlayer(int x, int y, int wp)
+{
+	int tile_xPlayer, tile_yPlayer, tile_xYeti, tile_yYeti;
+	int width_tilesPlayer, width_tilesYeti;
+	bool on_base;
+	int i, j;
+
+	tile_xPlayer = x / TILE_SIZE;
+	tile_yPlayer = y / TILE_SIZE;
+	tile_xYeti = this->x / TILE_SIZE;
+	tile_yYeti = this->y / TILE_SIZE;
+	
+	width_tilesPlayer = wp / TILE_SIZE;
+	width_tilesYeti = this->w / TILE_SIZE;
+	if ((x % TILE_SIZE) != 0) width_tilesPlayer++;
+	if ((this->x % TILE_SIZE) != 0) width_tilesYeti++;
+
+	on_base = false;
+	i = 0;
+	while ((i<width_tilesPlayer) && !on_base)
+	{
+		j = 0;
+		while ((j<width_tilesYeti) && !on_base)
+		{
+			if (tile_xPlayer == tile_xYeti && tile_yPlayer == tile_yYeti)
+			{
+				on_base = true;
+			}
+			j++;
+		}
+		i++;
+	}
+	return on_base;
+}
+bool yeti::JumpCollision(vector<int> vp, int wp)
+{
+	int tile_xPlayer, tile_yPlayer, tile_xYeti, tile_yYeti;
+	int width_tilesPlayer, width_tilesYeti;
+	bool on_base;
+	int i, j;
+
+	tile_xPlayer = x / TILE_SIZE;
+	tile_yPlayer = y / TILE_SIZE;
+	tile_xYeti = this->x / TILE_SIZE;
+	tile_yYeti = this->y / TILE_SIZE;
+
+	width_tilesPlayer = wp / TILE_SIZE;
+	width_tilesYeti = this->w / TILE_SIZE;
+	if ((x % TILE_SIZE) != 0) width_tilesPlayer++;
+	if ((this->x % TILE_SIZE) != 0) width_tilesYeti++;
+
+	on_base = false;
+	i = 0;
+
+	for (int j = 0; j < vp.size(); ++j) {
+		if (tile_xYeti == (vp[j]/TILE_SIZE)+2)
+		{
+			return true; //tocat en eix X
+		}
+		if (tile_xYeti == (vp[j] / TILE_SIZE) - 2)
+		{
+			return true; //tocat en eix X
+		}
+	}
+	return false;
 }
 void yeti::GetArea(cRecta *rc)
 {
@@ -279,7 +349,7 @@ void yeti::attackRight(int *map)
 	//Advance, no problem
 	else
 	{
-		if (state != STATE_WALKRIGHT)
+		if (state != STATE_ATTACK)
 		{
 			state = STATE_ATTACK;
 			seq = 0;
@@ -303,7 +373,7 @@ void yeti::attackLeft(int *map)
 	//Advance, no problem
 	else
 	{
-		if (state != STATE_WALKLEFT)
+		if (state != STATE_ATTACK)
 		{
 			state = STATE_ATTACK;
 			seq = 0;
@@ -399,29 +469,25 @@ int yeti::decision(int *map, int x, int y)
 	
 	if (!CollidesMapWall(map, true))
 	{
-		if (x < this->x && x + 5 * 16 > this->x)
+		if (x <= this->x && x + 5 * 16 > this->x)
 		{
 			attackLeft(map);
-			OutputDebugString("EsquerraAtaca");
-			return 17;
+			return 1;
 		}
 		else if (x > this->x && x - 5 * 16 < this->x)
 		{
 			attackRight(map);
-			OutputDebugString("DretaAtaca");
-			return 17;
+			return 1;
 		}
 		else if (x < this->x && x + 15*16 > this->x)
 		{
 			MoveLeft(map);
-			OutputDebugString("Esquerra");
-			return 14;
+			return 0;
 		}
 		else if (x > this->x && x - 15*16 < this->x)
 		{
 			MoveRight(map);
-			OutputDebugString("Dreta");
-			return 14;
+			return 0;
 		}
 	}
 	else
@@ -429,23 +495,26 @@ int yeti::decision(int *map, int x, int y)
 		if (CollidesMapWall(map, false))
 		{
 			JumpLeft(map);
-			OutputDebugString("EsquerraSalta");
-			return 14;
+			return 0;
 		}
 		else
 		{
 			JumpRight(map);
-			OutputDebugString("DretaSalta");
-			return 14;
+			return 0;
 		}
 	}
-	OutputDebugString("RAP");
-	return 14;
+	return 0;
 }
-bool yeti::LogicBullets(vector<int> vp)
+bool yeti::LogicBullets(vector<int> vpx, vector<int> vpy)
 {
-	for (int j = 0; j < vp.size(); ++j) {
-		if (x == vp[j]) return true; //tocat en eix X
+	int tile_xYeti = this->x / TILE_SIZE;
+	int tile_yYeti = this->y / TILE_SIZE;
+
+	for (int j = 0; j < vpx.size(); ++j) {
+		if (tile_xYeti == vpx[j]/TILE_SIZE && tile_yYeti == vpy[j]/TILE_SIZE)
+		{
+			return true; //tocat en eix X
+		}
 	}
 	return false;
 }

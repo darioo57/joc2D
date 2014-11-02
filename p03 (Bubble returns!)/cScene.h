@@ -5,8 +5,8 @@
 
 #define SCENE_Xo		TILE_SIZE
 #define SCENE_Yo		TILE_SIZE
-#define SCENE_WIDTH		100
-#define SCENE_HEIGHT	28
+#define SCENE_WIDTH		247
+#define SCENE_HEIGHT	25
 
 #define FILENAME		"level"
 #define FILENAME_EXT	".txt"

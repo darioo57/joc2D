@@ -41,9 +41,9 @@ public:
 	bool CollidesMapWall(int *map,bool right);
 	bool CollidesMapFloor(int *map);
 	void GetArea(cRect *rc);
-	vector<int> GetBulletPosX();
-	void GetBulletPosY(vector<int> *auxVY);
-	void DrawRect(int tex_id,float xo,float yo,float xf,float yf, char sentit);
+	void GetBulletPosX(vector<int> *auxX1, vector<int> *auxX2);
+	void GetBulletPosY(vector<int> *auxVY1, vector<int> *auxVY2);
+	void DrawRect(int tex_id,float xo,float yo,float xf,float yf, char sentit, bool dispara);
 	void DrawRectBullet(char sentit, int tex_id_bala, int numb);
 
 	void MoveRight(int *map);
@@ -56,7 +56,7 @@ public:
 
 	int  GetState();
 	void SetState(int s);
-
+	void ResetFrame();
 	void NextFrame(int max);
 	int  GetFrame();
 	
@@ -68,7 +68,8 @@ private:
 	int bx, by;
 	vector<int> vxL;
 	vector<int> vxR;
-	vector<int> vpos; 
+	vector<int> vpos1;
+	vector<int> vpos2; 
 	vector<int> vxLauxX;
 	vector<int> auxscreen_y;
 	vector<int> auxscreen_y2;

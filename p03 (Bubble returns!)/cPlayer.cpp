@@ -3,7 +3,7 @@
 int paaa = -1, pbbb = -1;
 bool pbL = false, pbR = false;
 char sentit = 'X';
-bool dispara = false;
+int ant = 0;
 
 cPlayer::cPlayer() {}
 cPlayer::~cPlayer(){}
@@ -12,6 +12,7 @@ void cPlayer::Draw(int tex_id, int tex_id_bala, int act, bool shoot)
 {	
 	float xo = 0.0f, yo = 0.0f, xf = 0.052632f, yf = 1.0f;
 	sentit = 'X';
+
 	if (act == 1)	//act = 1 -> animacio mort
 	{
 		if (GetFrame() == 18) {
@@ -63,13 +64,9 @@ void cPlayer::Draw(int tex_id, int tex_id_bala, int act, bool shoot)
 			sentit = 'R';
 			break;
 		}
-		if (GetFrame() == 0 && !dispara) {
-			dispara = true;
-		}
-		else if (GetFrame() != 0) {
-			dispara = false;
-		}
 
+		if (act == 2) ResetFrame();
+		ant = GetFrame();
 		xo = 0.25f + (GetFrame()*0.25f);	yo = 0.0f;
 		NextFrame(4);
 		xf = xo + 0.25f;
@@ -85,6 +82,7 @@ void cPlayer::Draw(int tex_id, int tex_id_bala, int act, bool shoot)
 			break;
 
 		case STATE_LOOKRIGHT:	xo = 0.0f;	yo = 0.0f;
+			sentit = 'R';
 			break;
 
 		case STATE_WALKLEFT:	xo = 0.111f + (GetFrame()*0.111f);	yo = 0.0f;
@@ -101,7 +99,8 @@ void cPlayer::Draw(int tex_id, int tex_id_bala, int act, bool shoot)
 		yf = 1.0f;
 	}
 
-	DrawRect(tex_id, xo, yo, xf, yf, sentit);
+	if (shoot) DrawRect(tex_id, xo, yo, xf, yf, sentit, true);
+	else DrawRect(tex_id, xo, yo, xf, yf, sentit, false);
 
 	for (int i = 0; i < 1000; ++i) {
 		if (i <= paaa) {
@@ -119,7 +118,7 @@ void cPlayer::Draw(int tex_id, int tex_id_bala, int act, bool shoot)
 				shoot = false;
 			}
 			if (pbL) {
-				if (dispara) paaa = paaa + 1;
+				if (GetFrame() == 1 && ant == 0) paaa = paaa + 1;
 				pbL = false;
 			}
 		}
@@ -133,7 +132,7 @@ void cPlayer::Draw(int tex_id, int tex_id_bala, int act, bool shoot)
 				shoot = false;
 			}
 			if (pbR) {
-				if (dispara) pbbb = pbbb + 1;
+				if (GetFrame() == 1 && ant == 0) pbbb = pbbb + 1;
 				pbR = false;
 			}
 		}
